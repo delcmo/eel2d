@@ -1,0 +1,38 @@
+[Tests]
+  [./VaporNozzle]
+    type = 'Exodiff'
+    input_switch = '-i'
+    input = 'VaporNozzle.i'
+    exodiff = 'VaporNozzle_out.e'
+    rel_err = 1e-4
+    #skip = 'disabled - BC adjustment'
+  [../]
+
+  [./SodTube1D]
+    type = 'Exodiff'
+    input_switch = '-i'
+    input = 'SodTube1D.i'
+    exodiff = 'SodTube1D_out.e'
+    rel_err = 2e-4
+    #skip = 'disabled - BC adjustment'
+  [../]
+
+  [./SodTube2DX]
+    type = 'Exodiff'
+    input_switch = '-i'
+    input = 'SodTube2DX.i'
+    exodiff = 'SodTube2DX_out.e'
+    rel_err = 2e-4
+    #skip = 'disabled - BC adjustment'
+  [../]
+
+  [./SodTube2DY]
+    type = 'Exodiff'
+    input_switch = '-i'
+    input = 'SodTube2DY.i'
+    exodiff = 'SodTube2DY_out.e'
+    rel_err = 2e-4
+    #skip = 'disabled - BC adjustment'
+  [../]
+
+[]
