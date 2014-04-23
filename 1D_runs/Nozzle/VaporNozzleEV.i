@@ -17,8 +17,7 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1
-
-Hw_fn = Hw_fn
+useVelPps = true
 
 ###### Initial Conditions #######
 pressure_init_left = 1.e6
@@ -28,6 +27,7 @@ vel_init_right = 0
 temp_init_left = 453
 temp_init_right = 453
 membrane = 0.5
+length = 1.
 []
 
 #############################################################################
@@ -38,7 +38,7 @@ membrane = 0.5
 
 [UserObjects]
   [./eos]
-    type = EquationOfState
+    type = StiffenedGasEquationOfState
   	gamma = 1.34
   	Pinf = 0
   	q = 1968e3
@@ -63,7 +63,7 @@ membrane = 0.5
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 400
+  nx = 200
   xmin = 0
   xmax = 1
   block_id = '0'
@@ -190,7 +190,6 @@ membrane = 0.5
     internal_energy = internal_energy_aux
     norm_velocity = norm_vel_aux
     area = area_aux
-    eos = eos
   [../]
 
    [./MomentumVisc]
@@ -202,7 +201,6 @@ membrane = 0.5
     internal_energy = internal_energy_aux
     norm_velocity = norm_vel_aux
     area = area_aux
-    eos = eos
   [../]
 
    [./EnergyVisc]
@@ -214,7 +212,6 @@ membrane = 0.5
     internal_energy = internal_energy_aux
     norm_velocity = norm_vel_aux
     area = area_aux
-    eos = eos
   [../]
 []
 
@@ -291,11 +288,6 @@ membrane = 0.5
     family = MONOMIAL
     order = CONSTANT
   [../]
-
-   [./residual_aux]
-    family = MONOMIAL
-    order = CONSTANT
-   [../]
 []
 
 ##############################################################################################
@@ -399,12 +391,6 @@ membrane = 0.5
     variable = kappa_aux
     property = kappa
    [../]
-
-   [./ResidualAK]
-    type = MaterialRealAux
-    variable = residual_aux
-    property = residual
-  [../]
 []
 
 ##############################################################################################
@@ -424,8 +410,7 @@ membrane = 0.5
     norm_velocity = norm_vel_aux
     jump_grad_press = smooth_jump_grad_press_aux
     eos = eos
-    pressure_PPS_name = AveragePressure
-    velocity_PPS_name = MaxVelocity 
+    velocity_PPS_name = AverageVelocity
   [../]
 
 []
@@ -436,10 +421,10 @@ membrane = 0.5
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-  [./MaxVelocity]
-    type = NodalMaxValue
-    variable = velocity_aux
-  [../]
+#  [./MaxVelocity]
+#    type = NodalMaxValue
+#    variable = velocity_aux
+#  [../]
 
   [./AverageVelocity]
     type = ElementAverageValue
@@ -473,9 +458,6 @@ membrane = 0.5
     rhoA = rhoA
     rhouA_x = rhouA
     rhoEA = rhoEA
-    vel_x = velocity_aux    
-    pressure = pressure_aux
-    density = density_aux
     area = area_aux
     eos = eos
     boundary = 'right'
@@ -500,9 +482,6 @@ membrane = 0.5
     rhoA = rhoA
     rhouA_x = rhouA
     rhoEA = rhoEA
-    vel_x = velocity_aux
-    pressure = pressure_aux
-    density = density_aux
     area = area_aux
     eos = eos
     boundary = 'right'
@@ -527,9 +506,6 @@ membrane = 0.5
     rhoA = rhoA
     rhouA_x = rhouA
     rhoEA = rhoEA
-    vel_x = velocity_aux
-    pressure = pressure_aux
-    density = density_aux
     area = area_aux
     eos = eos
     boundary = 'right'
@@ -550,12 +526,8 @@ membrane = 0.5
     full = true
     solve_type = 'PJFNK'
     line_search = 'none'
-    petsc_options = '-snes_mf_operator -snes_ksp_ew'
     petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
     petsc_options_value = '1.e-12       ds             ds'
-    #petsc_options = '-snes_mf_operator -ksp_converged_reason -ksp_monitor -snes_ksp_ew'
-    #petsc_options_iname = '-pc_type'
-    #petsc_options_value = 'lu'
   [../]
 
   [./SMP]
@@ -577,18 +549,14 @@ membrane = 0.5
 
 [Executioner]
   type = Transient   # Here we use the Transient Executioner
-  #scheme = 'explicit-euler'
   scheme = 'bdf2'
-  #petsc_options = '-snes'
-  #petsc_options_iname = '-pc_type'
-  #petsc_options_value = 'lu'
   #num_steps = 40
   end_time = 2.6e-2
   #dt = 5e-5
   [./TimeStepper]
     type = FunctionDT
     time_t =  '0     2.6e-2'
-    time_dt = '5e-5  5e-5'
+    time_dt = '1e-4  1e-4'
   [../]
   dtmin = 1e-9
   #dtmax = 1e-5
@@ -608,10 +576,11 @@ membrane = 0.5
 # Define the functions computing the inflow and outflow boundary conditions.                 #
 ##############################################################################################
 
-[Output]
-  output_initial = true
-  interval = 1
-  exodus = true
-  postprocessor_screen = false
-  perf_log = true
+[Outputs]
+    output_initial = true
+    interval = 1
+    console = true
+    exodus = true
+    postprocessor_screen = false
+    perf_log = true
 []

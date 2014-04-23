@@ -86,8 +86,7 @@ SmoothFunction::execute()
         
         // Determine the maximum value for smoothing:
         for (unsigned int qp = 0; qp < _q_point.size(); ++qp) {
-            Real _value_temp = std::max(_u[qp], _u_neighbor[qp]);
-            //Real _value_temp = 0.5*(_u[qp]+_u_neighbor[qp]);
+            Real _value_temp = 0.5*(_u[qp]+_u_neighbor[qp]);
             _value = std::max(_value_temp, _value);
         }
         

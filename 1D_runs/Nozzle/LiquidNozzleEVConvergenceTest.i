@@ -37,26 +37,20 @@ length = 1.
 #############################################################################
 
 [UserObjects]
-    [./eos]
+  [./eos]
     type = StiffenedGasEquationOfState
-    gamma = 2.35
-    Pinf = 1.e9
-    q = -1167e3
-    Cv = 1816
-    q_prime = 0 # reference entropy
-    [../]
+  	gamma = 2.35
+  	Pinf = 1.e9
+  	q = -1167e3
+  	Cv = 1816
+  	q_prime = 0 # reference entropy
+  [../]
 
-    [./JumpGradPress]
+  [./JumpGradPress]
     type = JumpGradientInterface
     variable = pressure_aux
     jump_name = jump_grad_press_aux
-    [../]
-
-    [./JumpGradDens]
-    type = JumpGradientInterface
-    variable = density_aux
-    jump_name = jump_grad_dens_aux
-    [../]
+  [../]
 []
 
 ###### Mesh #######
@@ -85,6 +79,27 @@ length = 1.
     length = 1.
     Ao = 1.0
     Bo = 0.0
+  [../]
+  
+  [./exact_sol_press]
+    type = ExactSolAreaVariable
+    variable_name = PRESSURE
+    length = 1.
+    eos = eos
+  [../]
+
+  [./exact_sol_dens]
+    type = ExactSolAreaVariable
+    variable_name = DENSITY
+    length = 1.
+    eos = eos
+  [../]
+
+  [./exact_sol_vel]
+    type = ExactSolAreaVariable
+    variable_name = VELOCITY
+    length = 1.
+    eos = eos
   [../]
 
 []
@@ -218,6 +233,18 @@ length = 1.
 
 [AuxVariables]
 
+   [./press_exact_aux]
+      family = LAGRANGE
+   [../]
+
+   [./vel_exact_aux]
+    family = LAGRANGE
+   [../]
+
+   [./dens_exact_aux]
+    family = LAGRANGE
+   [../]
+
    [./area_aux]
       family = LAGRANGE
    [../]
@@ -283,10 +310,6 @@ length = 1.
     order = CONSTANT
    [../]
 
-    [./jump_grad_dens_aux]
-     family = MONOMIAL
-     order = CONSTANT
-    [../]
 []
 
 ##############################################################################################
@@ -296,6 +319,24 @@ length = 1.
 ##############################################################################################
 
 [AuxKernels]
+
+  [./ExactSolPressAK]
+    type = FunctionAux
+    variable = press_exact_aux
+    function = exact_sol_press
+  [../]
+
+  [./ExactSolDensityAK]
+    type = FunctionAux
+    variable = dens_exact_aux
+    function = exact_sol_dens
+  [../]
+
+  [./ExactSolVelAK]
+    type = FunctionAux
+    variable = vel_exact_aux
+    function = exact_sol_vel
+  [../]
 
   [./AreaAK]
     type = FunctionAux
@@ -415,9 +456,8 @@ length = 1.
     density = density_aux
     norm_velocity = norm_vel_aux
     jump_grad_press = jump_grad_press_aux
-    jump_grad_dens = jump_grad_dens_aux
     eos = eos
-    velocity_PPS_name = AverageVelocity
+#velocity_PPS_name = MaxVelocity
   [../]
 
 []
@@ -428,14 +468,32 @@ length = 1.
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-#  [./MaxVelocity]
-#    type = NodalMaxValue
-#    variable = velocity_aux
-#  [../]
+  [./MaxVelocity]
+    type = NodalMaxValue
+    variable = velocity_aux
+  [../]
 
   [./AverageVelocity]
     type = ElementAverageValue
     variable = norm_vel_aux
+  [../]
+
+    [./ErrorPressure]
+    type = ElementL2Error
+    variable = pressure_aux
+    function = exact_sol_press
+    [../]
+
+  [./ErrorDensity]
+    type = ElementL2Error
+    variable = density_aux
+    function = exact_sol_dens
+  [../]
+
+  [./ErrorVel]
+    type = ElementL2Error
+    variable = velocity_aux
+    function = exact_sol_vel
   [../]
 []
 
@@ -465,6 +523,9 @@ length = 1.
     rhoA = rhoA
     rhouA_x = rhouA
     rhoEA = rhoEA
+    vel_x = velocity_aux    
+    pressure = pressure_aux
+    density = density_aux
     area = area_aux
     eos = eos
     boundary = 'right'
@@ -489,6 +550,9 @@ length = 1.
     rhoA = rhoA
     rhouA_x = rhouA
     rhoEA = rhoEA
+    vel_x = velocity_aux
+    pressure = pressure_aux
+    density = density_aux
     area = area_aux
     eos = eos
     boundary = 'right'
@@ -513,6 +577,9 @@ length = 1.
     rhoA = rhoA
     rhouA_x = rhouA
     rhoEA = rhoEA
+    vel_x = velocity_aux
+    pressure = pressure_aux
+    density = density_aux
     area = area_aux
     eos = eos
     boundary = 'right'

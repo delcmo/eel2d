@@ -45,9 +45,6 @@ private:
     VariableValue & _vel_x;
     VariableValue & _vel_y;
     VariableValue & _vel_z;
-    VariableValue & _vel_x_old;
-    VariableValue & _vel_y_old;
-    VariableValue & _vel_z_old;
     VariableGradient & _grad_vel_x;
     VariableGradient & _grad_vel_y;
     VariableGradient & _grad_vel_z;
@@ -57,14 +54,12 @@ private:
     VariableValue & _pressure_old;
     VariableValue & _pressure_older;
     VariableGradient & _grad_press;
-    VariableGradient & _grad_press_old;
     
     // Coupled aux variable: density
     VariableValue & _rho;
     VariableValue & _rho_old;
     VariableValue & _rho_older;
     VariableGradient & _grad_rho;
-    VariableGradient & _grad_rho_old;
     
     // Coupled aux variable: norm of velocity
     VariableValue & _norm_vel;
@@ -75,7 +70,6 @@ private:
     VariableValue & _jump_grad_dens;
     
     // Jump cross section:
-    VariableValue & _jump_grad_area;
     VariableValue & _area;
     
     // Material properties

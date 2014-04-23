@@ -56,7 +56,7 @@ JumpGradientInterface::execute()
     // Compute the total perimeter/area of the elements:
     Real _perim_elem = 0.;
     Real _perim_nghb_elem = 0.;
-    Real _size_side = 1;
+    Real _size_side = 0.5;
     if (_mesh.dimension() != 1) {
         for (unsigned int _jvar=0; _jvar<_current_elem->n_sides(); _jvar++) {
             _perim_elem += _current_elem->side(_jvar)->volume();
