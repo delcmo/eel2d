@@ -194,7 +194,7 @@ ComputeViscCoeff::computeQpProperties()
             }
             break;
         case PRESSURE_BASED:
-            if (_t_step <= 1) {
+            if (_t_step == 1) {
                 _mu[_qp] = _kappa_max[_qp];
                 _kappa[_qp] = _kappa_max[_qp];
             }
