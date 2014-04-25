@@ -52,6 +52,8 @@
 #include "MaxAbsoluteValuePPS.h"
 #include "NodalMassConservationPPS.h"
 #include "InviscidTimeStepLimit.h"
+#include "ElementAverageMultipleValues.h"
+#include "ElementIntegralMultipleVariablesPostprocessor.h"
 // UserObjects
 #include "EquationOfState.h"
 #include "StiffenedGasEquationOfState.h"
@@ -118,6 +120,8 @@ namespace Eel2d
       registerPostprocessor(MaxAbsoluteValuePPS);
       registerPostprocessor(NodalMassConservationPPS);
       registerPostprocessor(InviscidTimeStepLimit);
+      registerPostprocessor(ElementAverageMultipleValues);
+      registerPostprocessor(ElementIntegralMultipleVariablesPostprocessor);
       //UserObjects
       registerUserObject(EquationOfState);
       registerUserObject(StiffenedGasEquationOfState);

@@ -96,7 +96,8 @@ Real EelArtificialVisc::computeQpResidual()
     else if (_diff_type == 0) {
         // Compute 0.5*rho*mu*grad(vel)_symmetric: (get a symmetric tensor)
         TensorValue<Real> grad_vel_tensor(_grad_vel_x[_qp], _grad_vel_y[_qp], _grad_vel_z[_qp]);
-        grad_vel_tensor = ( grad_vel_tensor + grad_vel_tensor.transpose() ) * 0.5 * _rho[_qp] * _mu[_qp];
+        grad_vel_tensor = ( grad_vel_tensor + grad_vel_tensor.transpose() );
+        grad_vel_tensor *= 0.5 * _rho[_qp] * _mu[_qp];
         
         // Compute f = kappa * grad(rho):
         RealVectorValue f(_kappa[_qp]*_grad_rho[_qp](0), _kappa[_qp]*_grad_rho[_qp](1), _kappa[_qp]*_grad_rho[_qp](2));

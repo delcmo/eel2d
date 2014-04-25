@@ -88,15 +88,18 @@ private:
     const Real & _aw;
     
     // Multiplicative coefficient for viscosity:
-    const double & _Ce;
-    const double & _Cjump;
+    double _Ce;
+    double _Cjump_press;
+    double _Cjump_rho;
     
     // UserObject: equation of state
     const EquationOfState & _eos;
     
-    // Name of the posprocessors for pressure and velocity:
-    std::string _velocity_pps_name;
-    bool _useVelPps;
+    // Name of the posprocessors for pressure, velocity and void fraction:
+    std::string _rhov2_pps_name;
+    std::string _rhocv_pps_name;
+    std::string _rhoc2_pps_name;
+    std::string _press_pps_name;
 };
 
 #endif //ComputeViscCoeff_H

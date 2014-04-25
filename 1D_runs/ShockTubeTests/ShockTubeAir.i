@@ -10,8 +10,8 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
-
-Hw_fn = Hw_fn
+Cjump_press = 5.
+Cjump_density = 5.
 
 ###### Initial Conditions #######
 pressure_init_left = 1.e9
@@ -31,10 +31,6 @@ length = 1e-6
 ##############################################################################################
 
 [Functions]
-  [./Hw_fn]
-    type = ParsedFunction
-    value = 0.
-  [../]
 
   [./area]
     type = ParsedFunction
@@ -50,7 +46,7 @@ length = 1e-6
 
 [UserObjects]
   [./eos]
-    type = EquationOfState
+    type = StiffenedGasEquationOfState
     gamma = 4.4
     Pinf = 6.e8
     q = 0.
@@ -92,7 +88,7 @@ length = 1e-6
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 400
+  nx = 1000
   xmin = 0.
   xmax = 1.
   block_id = '0'
@@ -285,11 +281,6 @@ length = 1e-6
     order = CONSTANT
    [../]
 
-  [./residual_aux]
-    family = MONOMIAL
-    order = CONSTANT
-  [../]
-
   [./jump_grad_press_aux]
     family = MONOMIAL
     order = CONSTANT
@@ -401,12 +392,6 @@ length = 1e-6
     property = kappa_max 
   [../]
 
-  [./ResidualAK]
-    type = MaterialRealAux
-    variable = residual_aux
-    property = residual
-  [../]
-
    [./MuAK]
     type = MaterialRealAux
     variable = mu_aux
@@ -439,7 +424,10 @@ length = 1e-6
     jump_grad_press = jump_grad_press_smooth_aux
     jump_grad_dens = jump_grad_dens_smooth_aux
     eos = eos
-    velocity_PPS_name = AverageVelocity
+    rhov2_PPS_name = AverageRhovel2
+    rhocv_PPS_name = AverageRhocvel
+    rhoc2_PPS_name = AverageRhoc2
+    press_PPS_name = AveragePressure
   [../]
 
 []
@@ -450,17 +438,42 @@ length = 1e-6
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-#active = 'MaxVelocity'
-  [./MaxVelocity]
-    type = NodalMaxValue
-    variable = norm_vel_aux
-    execute_on = timestep
+  [./AveragePressure]
+    type = ElementAverageValue
+    variable = pressure_aux
   [../]
 
-  [./AverageVelocity]
-    type = ElementAverageValue
+  [./AverageRhovel2]
+    type = ElementAverageMultipleValues
     variable = norm_vel_aux
-    execute_on = timestep
+    output_type = RHOVEL2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+  [../]
+
+  [./AverageRhocvel]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOCVEL
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+  [../]
+
+  [./AverageRhoc2]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOC2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
   [../]
 []
 
@@ -560,11 +573,12 @@ length = 1e-6
   nl_max_its = 10
   [./TimeStepper]
     type = FunctionDT
-    time_t =  '0      1.e-7  1.e-4'
-    time_dt = '1.e-8  1.e-6  1.e-6'
+    time_t =  '0      1.e-6  1.e-4'
+    time_dt = '2.e-7  2.e-7  2.e-7'
   [../]
   [./Quadrature]
-    type = TRAP
+    type = GAUSS
+    order = FOURTH
   [../]
 []
 ##############################################################################################
@@ -573,10 +587,11 @@ length = 1e-6
 # Define the functions computing the inflow and outflow boundary conditions.                 #
 ##############################################################################################
 
-[Output]
+[Outputs]
   output_initial = true
   postprocessor_screen = false
-  interval = 4
+  interval = 1
+  console = true
   exodus = true
   perf_log = true
 []

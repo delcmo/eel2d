@@ -25,12 +25,15 @@ InputParameters validParams<ComputeViscCoeff>()
     params.addParam<Real>("aw", 0., "Wall heat surface.");
     // Cconstant parameter:
     params.addParam<double>("Ce", 1., "Coefficient for viscosity");
-    params.addParam<double>("Cjump", 1., "Coefficient for jump");
+    params.addParam<double>("Cjump_press", 1., "Coefficient for pressure");
+    params.addParam<double>("Cjump_density", "Coefficient for density jump");
     // Userobject:
     params.addRequiredParam<UserObjectName>("eos", "Equation of state");
     // PPS names:
-    params.addParam<std::string>("velocity_PPS_name", "none", "name of the pps for velocity");
-    params.addParam<bool>("useVelPps", false, "Do I use velocity postprocessor?.");
+    params.addParam<std::string>("rhov2_PPS_name", "name of the pps computing rho*vel*vel");
+    params.addParam<std::string>("rhocv_PPS_name", "name of the pps computing rho*c*vel");
+    params.addParam<std::string>("rhoc2_PPS_name", "name of the pps computing rho*c*c");
+    params.addParam<std::string>("press_PPS_name", "name of the pps computing pressure");
     return params;
 }
 
@@ -81,12 +84,15 @@ ComputeViscCoeff::ComputeViscCoeff(const std::string & name, InputParameters par
     _aw(getParam<Real>("aw")),
     // Get parameter Ce
     _Ce(getParam<double>("Ce")),
-    _Cjump(getParam<double>("Cjump")),
+    _Cjump_press(getParam<double>("Cjump_press")),
+    _Cjump_rho(getParam<double>(isParamValid("Cjump_density") ? "Cjump_density" : "Cjump_press")),
     // UserObject:
     _eos(getUserObject<EquationOfState>("eos")),
     // PPS name:
-    _velocity_pps_name(getParam<std::string>("velocity_PPS_name")),
-    _useVelPps(getParam<bool>("useVelPps"))
+    _rhov2_pps_name(getParam<std::string>("rhov2_PPS_name")),
+    _rhocv_pps_name(getParam<std::string>("rhocv_PPS_name")),
+    _rhoc2_pps_name(getParam<std::string>("rhoc2_PPS_name")),
+    _press_pps_name(getParam<std::string>("press_PPS_name"))
 {
     _visc_type = _visc_name;
     if (_Ce < 0.)
@@ -112,7 +118,10 @@ ComputeViscCoeff::computeQpProperties()
     
     // Compute Mach number and velocity variable to use in the noramlization parameter:
     Real Mach = std::min(1., _norm_vel[_qp] / c);
-    Real vel_var = _useVelPps ? getPostprocessorValueByName(_velocity_pps_name) : _norm_vel[_qp];
+    Real rhov2_pps = std::max(getPostprocessorValueByName(_rhov2_pps_name), eps);// : _norm_vel[_qp];
+    Real rhocv_pps = std::max(getPostprocessorValueByName(_rhocv_pps_name), eps);// : _norm_vel[_qp];
+    Real rhoc2_pps = std::max(getPostprocessorValueByName(_rhoc2_pps_name), eps);// : _rho[_qp]*_c*_c;
+    Real press_pps = std::max(getPostprocessorValueByName(_press_pps_name), eps);
     
     // Initialyze some vector, value, ..., used for LAPIDUS viscosity:
     _l[_qp](0)=_grad_norm_vel[_qp](0)/(_grad_norm_vel[_qp].size() + eps);
@@ -166,8 +175,10 @@ ComputeViscCoeff::computeQpProperties()
 
                 // Compute the normalization parameters:
                 // Works for Leblanc
-                norm_mu = 0.5 * ( std::fabs((1.-Mach))*_rho[_qp]*c*c + Mach*_rho[_qp]*std::min(vel_var*vel_var, c*c) );
-                norm_kappa = 0.5 * ( std::fabs((1.-Mach))*_rho[_qp]*c*vel_var + Mach*_rho[_qp]*std::min(vel_var*vel_var, c*c) );
+                norm_mu = 0.5*rhocv_pps;
+                norm_kappa = 0.5*((1.-Mach)*std::min(rhoc2_pps, press_pps)+Mach*rhocv_pps);
+//                norm_mu = 0.5*((1.-Mach)*rhocv_pps + Mach*std::min(rhov2_pps,rhoc2_pps));
+//                norm_kappa = 0.5*((1.-Mach)*rhoc2_pps + Mach*std::min(rhov2_pps,rhoc2_pps));
                 
                 // Compute the residual for the wall heat transfer:
                 temp = _eos.temperature_from_p_rho(_pressure[_qp], _rho[_qp]);
@@ -183,13 +194,14 @@ ComputeViscCoeff::computeQpProperties()
                 residual = std::fabs(D_P-c*c*D_rho);
                 
                 // Compute global jump:
-                jump = _isJumpOn ? _Cjump*_norm_vel[_qp]*std::max( _jump_grad_press[_qp], c*c*_jump_grad_dens[_qp] ) : 0.;
+                jump = _isJumpOn ? _norm_vel[_qp]*std::max( _Cjump_press*_jump_grad_press[_qp], _Cjump_rho*c*c*_jump_grad_dens[_qp] ) : 0.;
                 
                 // Compute second order viscosity coefficients:
                 kappa_e = _Ce*_h*_h*( ( residual + std::fabs(wht) + jump ) / norm_kappa);
                 mu_e = _Ce*_h*_h*( ( residual + std::fabs(wht) + jump ) / norm_mu);
                 
-                _kappa[_qp] = std::min( _kappa_max[_qp], kappa_e );
+//                _kappa[_qp] = std::min( _kappa_max[_qp], kappa_e );
+                _kappa[_qp] = std::min( _kappa_max[_qp], mu_e );
                 _mu[_qp] = std::min( _kappa_max[_qp], mu_e );
             }
             break;
