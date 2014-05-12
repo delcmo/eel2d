@@ -10,8 +10,7 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
-Cjump_press = 5.
-Cjump_density = 5.
+Cjump = 5.
 
 ###### Initial Conditions #######
 pressure_init_left = 1.e9
@@ -31,7 +30,6 @@ length = 1e-6
 ##############################################################################################
 
 [Functions]
-
   [./area]
     type = ParsedFunction
     value = 1.
@@ -88,7 +86,7 @@ length = 1e-6
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 1000
+  nx = 500
   xmin = 0.
   xmax = 1.
   block_id = '0'
@@ -424,6 +422,7 @@ length = 1e-6
     jump_grad_press = jump_grad_press_smooth_aux
     jump_grad_dens = jump_grad_dens_smooth_aux
     eos = eos
+    DpressDt_PPS_name = MaxDpressureDt
     rhov2_PPS_name = AverageRhovel2
     rhocv_PPS_name = AverageRhocvel
     rhoc2_PPS_name = AverageRhoc2
@@ -438,9 +437,20 @@ length = 1e-6
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
+  [./MaxDpressureDt]
+    type = ElementMaxDuDtValue
+    variable = pressure_aux
+    variable2 = mach_number_aux
+  [../]
+
   [./AveragePressure]
     type = ElementAverageValue
     variable = pressure_aux
+  [../]
+
+  [./AverageMachNumber]
+    type = ElementAverageValue
+    variable = mach_number_aux
   [../]
 
   [./AverageRhovel2]
@@ -540,10 +550,10 @@ length = 1e-6
     type = FDP
     full = true
     solve_type = 'PJFNK'
-    #line_search = 'default'
+#    line_search = 'none'
     petsc_options = '-snes_ksp_ew'
     petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
-    petsc_options_value = '1.e-14       ds             ds'
+    petsc_options_value = '1.e-12       ds             ds'
   [../]
 
   [./SMP_Newton]
@@ -567,14 +577,14 @@ length = 1e-6
   dt = 1.e-7
   dtmin = 1e-9
   l_tol = 1e-8
-  nl_rel_tol = 1e-7
-  nl_abs_tol = 1e-6
+  nl_rel_tol = 1e-6
+  nl_abs_tol = 1e-5
   l_max_its = 50
   nl_max_its = 10
   [./TimeStepper]
     type = FunctionDT
-    time_t =  '0      1.e-6  1.e-4'
-    time_dt = '2.e-7  2.e-7  2.e-7'
+    time_t =  '0      1.e-5  1.e-4'
+    time_dt = '1.e-7  1.e-7  1.e-7'
   [../]
   [./Quadrature]
     type = GAUSS

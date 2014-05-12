@@ -2,7 +2,6 @@
 #define INVISCIDTIMESTEPLIMIT_H
 
 #include "ElementPostprocessor.h"
-#include "EquationOfState.h"
 
 class InviscidTimeStepLimit;
 
@@ -26,14 +25,13 @@ public:
   virtual void threadJoin(const UserObject & uo);
 
 protected:
+  unsigned int _dim;
   /// The value of dt (NOTE: _dt member variable is already defined)
   Real _value;
-  /// 
-  VariableValue & _pressure;
-  VariableValue & _rho;
-  VariableValue & _norm_vel;
-  /// Equation of state
-  const EquationOfState & _eos;
+  /// Velocity magnitude.  Hint: Use VectorMagnitudeAux in Moose for this
+  VariableValue & _vel_mag;
+  /// Sound Speed
+  VariableValue & _c;
   Real _beta;
 };
 

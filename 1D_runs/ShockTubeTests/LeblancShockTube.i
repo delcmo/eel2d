@@ -10,9 +10,10 @@ order = FIRST
 viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
-Ce = 1.1
-
-#Hw_fn = Hw_fn
+Ce = 1.
+Cjump_press = 5.
+Cjump_density_mu = 5.
+Cjump_density_kappa = 5.
 
 ###### Initial Conditions #######
 pressure_init_left = 0.066667
@@ -32,11 +33,6 @@ length = 0.
 ##############################################################################################
 
 [Functions]
-#  [./Hw_fn]
-#    type = ParsedFunction
-#    value = 0.
-#  [../]
-
   [./area]
     type = ParsedFunction
     value = 1.
@@ -404,7 +400,10 @@ length = 0.
     jump_grad_press = jump_grad_press_smooth_aux
     #jump_grad_dens = jump_grad_dens_smooth_aux
     eos = eos
-    velocity_PPS_name = AverageVelocity
+    rhov2_PPS_name = AverageRhovel2
+    rhocv_PPS_name = AverageRhocvel
+    rhoc2_PPS_name = AverageRhoc2
+    press_PPS_name = AveragePressure
   [../]
 
 []
@@ -415,12 +414,43 @@ length = 0.
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-
-  [./AverageVelocity]
-    type = ElementAverageValue
-    variable = norm_vel_aux
+  [./AveragePressure]
+    type = ElementAverageAbsValue
+    variable = pressure_aux
   [../]
 
+  [./AverageRhovel2]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOVEL2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+  [../]
+
+  [./AverageRhocvel]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOCVEL
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+  [../]
+
+  [./AverageRhoc2]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOC2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+  [../]
 []
 
 ##############################################################################################
@@ -511,8 +541,8 @@ active = 'FDP_Newton'
   dt = 1e-8
   [./TimeStepper]
    type = FunctionDT
-   time_t =  '0      2.e-4  4.'
-   time_dt = '1.e-8  1.e-4  1.e-4'
+   time_t =  '0      2.e-3  4.'
+   time_dt = '1.e-8  1.e-3  1.e-3'
   [../]
   dtmin = 1e-9
   l_tol = 1e-10
@@ -530,11 +560,12 @@ active = 'FDP_Newton'
 # Define the functions computing the inflow and outflow boundary conditions.                 #
 ##############################################################################################
 
-[Output]
+[Outputs]
   output_initial = true
   file_base = Leblanc_nel_1000_out
   postprocessor_screen = false
-  interval = 100
+  interval = 1
+  console = true
   exodus = true
   perf_log = true
 []

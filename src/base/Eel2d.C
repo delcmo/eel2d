@@ -54,6 +54,13 @@
 #include "InviscidTimeStepLimit.h"
 #include "ElementAverageMultipleValues.h"
 #include "ElementIntegralMultipleVariablesPostprocessor.h"
+#include "ElementAverageAbsValue.h"
+#include "ElementIntegralAbsVariablePostprocessor.h"
+#include "NodalMinValue.h"
+#include "NodalMinMultipleValues.h"
+#include "NodalMaxMultipleValues.h"
+#include "ElementMaxDuDtValue.h"
+
 // UserObjects
 #include "EquationOfState.h"
 #include "StiffenedGasEquationOfState.h"
@@ -122,6 +129,12 @@ namespace Eel2d
       registerPostprocessor(InviscidTimeStepLimit);
       registerPostprocessor(ElementAverageMultipleValues);
       registerPostprocessor(ElementIntegralMultipleVariablesPostprocessor);
+      registerPostprocessor(ElementAverageAbsValue);
+      registerPostprocessor(ElementIntegralAbsVariablePostprocessor);
+      registerPostprocessor(NodalMinValue);
+      registerPostprocessor(NodalMinMultipleValues);
+      registerPostprocessor(NodalMaxMultipleValues);
+      registerPostprocessor(ElementMaxDuDtValue);
       //UserObjects
       registerUserObject(EquationOfState);
       registerUserObject(StiffenedGasEquationOfState);

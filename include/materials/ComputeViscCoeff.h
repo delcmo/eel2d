@@ -89,13 +89,13 @@ private:
     
     // Multiplicative coefficient for viscosity:
     double _Ce;
-    double _Cjump_press;
-    double _Cjump_rho;
+    double _Cjump;
     
     // UserObject: equation of state
     const EquationOfState & _eos;
     
     // Name of the posprocessors for pressure, velocity and void fraction:
+    std::string _DpressDt_pps_name;
     std::string _rhov2_pps_name;
     std::string _rhocv_pps_name;
     std::string _rhoc2_pps_name;

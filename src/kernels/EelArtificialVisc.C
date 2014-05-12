@@ -40,8 +40,8 @@ EelArtificialVisc::EelArtificialVisc(const std::string & name,
     // Declare equation types
     _equ_name(getParam<std::string>("equation_name")),
     _diff_name(getParam<std::string>("diffusion_name")),
-    _equ_type("CONTINUITY, XMOMENTUM, YMOMENTUM, ZMOMENTUM, ENERGY, INVALID", "INVALID"),
-    _diff_type("ENTROPY, PARABOLIC, NONE, INVALID", "INVALID"),
+    _equ_type("CONTINUITY, XMOMENTUM, YMOMENTUM, ZMOMENTUM, ENERGY, INVALID", _equ_name),
+    _diff_type("ENTROPY, PARABOLIC, NONE, INVALID",_diff_name),
     // Coupled auxilary variables
     _rho(coupledValue("density")),
     _grad_rho(coupledGradient("density")),
@@ -59,8 +59,8 @@ EelArtificialVisc::EelArtificialVisc(const std::string & name,
     _mu(getMaterialProperty<Real>("mu")),
     _kappa(getMaterialProperty<Real>("kappa"))
 {
-    _equ_type = _equ_name;
-    _diff_type = _diff_name;
+//    _equ_type = _equ_name;
+//    _diff_type = _diff_name;
 }
 
 Real EelArtificialVisc::computeQpResidual()

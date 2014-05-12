@@ -13,7 +13,7 @@ InputParameters validParams<Eel2dApp>()
 Eel2dApp::Eel2dApp(const std::string & name, InputParameters parameters) :
     MooseApp(name, parameters)
 {
-  srand(libMesh::processor_id());
+  srand(processor_id());
   
   Moose::registerObjects(_factory);
   //Elk::registerObjects(_factory);

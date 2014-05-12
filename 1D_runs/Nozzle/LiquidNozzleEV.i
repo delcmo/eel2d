@@ -16,8 +16,8 @@ order = FIRST
 viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
-useVelPps = true
-Ce = 1
+Ce = 1.
+Cjump = 1.
 
 ###### Initial Conditions #######
 pressure_init_left = 1.e6
@@ -417,7 +417,11 @@ length = 1.
     jump_grad_press = jump_grad_press_aux
     jump_grad_dens = jump_grad_dens_aux
     eos = eos
-    velocity_PPS_name = AverageVelocity
+    DpressDt_PPS_name = MaxDpressureDt
+    rhov2_PPS_name = AverageRhovel2
+    rhocv_PPS_name = AverageRhocvel
+    rhoc2_PPS_name = AverageRhoc2
+    press_PPS_name = AveragePressure
   [../]
 
 []
@@ -428,14 +432,48 @@ length = 1.
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-#  [./MaxVelocity]
-#    type = NodalMaxValue
-#    variable = velocity_aux
-#  [../]
+  [./MaxDpressureDt]
+    type = ElementMaxDuDtValue
+    variable = pressure_aux
+    variable2 = mach_number_aux
+  [../]
 
-  [./AverageVelocity]
-    type = ElementAverageValue
+  [./AveragePressure]
+    type = ElementAverageAbsValue
+    variable = pressure_aux
+  [../]
+
+  [./AverageRhovel2]
+    type = ElementAverageMultipleValues
     variable = norm_vel_aux
+    output_type = RHOVEL2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+  [../]
+
+  [./AverageRhocvel]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOCVEL
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+  [../]
+
+  [./AverageRhoc2]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOC2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
   [../]
 []
 
@@ -530,10 +568,10 @@ length = 1.
   [./FDP_Newton]
     type = FDP
     full = true
-    solve_type = NEWTON
+    solve_type = 'PJFNK' # NEWTON
     petsc_options = '-snes_mf_operator -snes_ksp_ew'
     petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
-    petsc_options_value = '1.e-12       ds             ds'
+    petsc_options_value = '1.e-10       ds             ds'
     #petsc_options = '-snes_mf_operator -ksp_converged_reason -ksp_monitor -snes_ksp_ew'
     #petsc_options_iname = '-pc_type'
     #petsc_options_value = 'lu'
@@ -567,13 +605,13 @@ length = 1.
   dtmin = 1e-9
   #dtmax = 1e-5
   l_tol = 1e-8
-  nl_rel_tol = 1e-7
-  nl_abs_tol = 1e-6
+  nl_rel_tol = 1e-6
+  nl_abs_tol = 1e-5
   l_max_its = 50
-  nl_max_its = 30
+  nl_max_its = 10
   [./Quadrature]
-    type = GAUSS # TRAP
-    order = TENTH
+    type = TRAP
+    order = THIRD
   [../]
 []
 
