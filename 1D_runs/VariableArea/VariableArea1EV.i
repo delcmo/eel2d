@@ -11,9 +11,9 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
-useVelPps = true
-
-#Hw_fn = Hw_fn
+Cjump = 5.
+Cmax = 1.
+isLowMachShock = false
 
 ###### Initial Conditions #######
 pressure_init_left = 400000.0
@@ -33,11 +33,6 @@ length = 0.0
 ##############################################################################################
 
 [Functions]
-#  [./Hw_fn]
-#    type = ParsedFunction
-#    value = 0.
-#  [../]
-
   [./area]
     type = PiecewiseConstant
     x = '0.0 1.0 2.0'
@@ -101,7 +96,7 @@ length = 0.0
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 1000
+  nx = 400
   xmin = 0.
   xmax = 2.
   block_id = '0'
@@ -127,7 +122,7 @@ length = 0.0
 
   [./rhouA]
     family = LAGRANGE
-    scaling = 1e+0
+    scaling = 1e-4
     [./InitialCondition]
         type = ConservativeVariables1DXIC
         eos = eos
@@ -137,7 +132,7 @@ length = 0.0
 
   [./rhoEA]
     family = LAGRANGE
-    scaling = 1e+0
+    scaling = 1e-6
 	[./InitialCondition]
         type = ConservativeVariables1DXIC
         eos = eos
@@ -419,7 +414,8 @@ length = 0.0
     jump_grad_area = jump_grad_area_aux
     area = area_aux
     eos = eos
-    velocity_PPS_name = AverageVelocity
+    rhov2_PPS_name = AverageRhovel2
+    rhoc2_PPS_name = AverageRhoc2
   [../]
 
 []
@@ -430,17 +426,27 @@ length = 0.0
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-#  [./MaxVelocity]
-#    type = NodalMaxValue
-#    variable = norm_vel_aux
-#    execute_on = timestep
-#  [../]
-
-  [./AverageVelocity]
-    type = ElementAverageValue
+[./AverageRhovel2]
+    type = ElementAverageMultipleValues
     variable = norm_vel_aux
-    execute_on = timestep
-  [../]
+    output_type = RHOVEL2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+[../]
+
+[./AverageRhoc2]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOC2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+[../]
 []
 
 ##############################################################################################
@@ -531,12 +537,12 @@ length = 0.0
   #rk_scheme = 'sdirk33'
   num_steps = 1000
   end_time = 7.e-4
-  dt = 1.e-6
-#  [./TimeStepper]
-#    type = FunctionDT
-#    time_t =  '0      2.e-4  0.2'
-#    time_dt = '1.e-6  5.e-4  5.e-4'
-#  [../]
+  dt = 1.e-5
+  [./TimeStepper]
+    type = FunctionDT
+    time_t =  '0      1.e-6  0.2'
+    time_dt = '1.e-6  1.e-6  1.e-6'
+  [../]
   dtmin = 1e-9
   l_tol = 1e-8
   nl_rel_tol = 1e-12
@@ -545,7 +551,7 @@ length = 0.0
   nl_max_its = 10
   [./Quadrature]
     type = TRAP
-    #order = SECOND
+    order = SECOND
   [../]
 []
 ##############################################################################################
@@ -554,11 +560,9 @@ length = 0.0
 # Define the functions computing the inflow and outflow boundary conditions.                 #
 ##############################################################################################
 
-[Output]
-  output_initial = true
-#file_base = ToroTest1
-  postprocessor_screen = false
-  interval = 20
-  exodus = true
-  perf_log = true
+[Outputs]
+    output_initial = true
+    interval = 1
+    console = true
+    exodus = true
 []

@@ -3,31 +3,37 @@
 # Define some global parameters used in the blocks. #
 #####################################################
 #
-
 [GlobalParams]
-###### Boundary conditions: inflow and outflow #######
-p0_bc = 1.e6
-T0_bc = 453.
-p_bc = 0.5e6
-T_bc = 453.
-
 ###### Other parameters #######
 order = FIRST
 viscosity_name = ENTROPY
 diffusion_name = ENTROPY
-isJumpOn = true
+isJumpOn = false
 Ce = 1.
 Cjump = 0.
 
 ###### Initial Conditions #######
-pressure_init_left = 1.e6
-pressure_init_right = 0.5e6
-vel_init_left = 0
-vel_init_right = 0
-temp_init_left = 453
-temp_init_right = 453
+pressure_init_left = 101325.
+pressure_init_right = 101325.
+vel_init_left = -100.
+vel_init_right = 100.
+temp_init_left = 300.
+temp_init_right = 300.
 membrane = 0.5
-length = 1.
+length = 1e-6
+[]
+
+##############################################################################################
+#                                       FUNCTIONs                                            #
+##############################################################################################
+# Define functions that are used in the kernels and aux. kernels.                            #
+##############################################################################################
+
+[Functions]
+  [./area]
+    type = ParsedFunction
+    value = 1.
+  [../]
 []
 
 #############################################################################
@@ -39,69 +45,52 @@ length = 1.
 [UserObjects]
   [./eos]
     type = StiffenedGasEquationOfState
-  	gamma = 2.35
-  	Pinf = 1.e9
-  	q = -1167e3
-  	Cv = 1816
-  	q_prime = 0 # reference entropy
+    gamma = 4.4
+    Pinf = 6.e8
+    q = 0.
+    Cv = 1.e3
+    q_prime = 0.
   [../]
 
   [./JumpGradPress]
     type = JumpGradientInterface
     variable = pressure_aux
     jump_name = jump_grad_press_aux
+    execute_on = timestep_begin
   [../]
+
+  [./JumpGradDens]
+    type = JumpGradientInterface
+    variable = density_aux
+    jump_name = jump_grad_dens_aux
+    execute_on = timestep_begin
+  [../]
+
+  [./JumpGradPressSmooth]
+    type = SmoothFunction
+    variable = jump_grad_press_aux
+    var_name = jump_grad_press_smooth_aux
+    execute_on = timestep_begin
+  [../]
+
+  [./JumpGradDensSmooth]
+    type = SmoothFunction
+    variable = jump_grad_dens_aux
+    var_name = jump_grad_dens_smooth_aux
+    execute_on = timestep_begin
+  [../]
+
 []
 
 ###### Mesh #######
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 16
-  xmin = 0
-  xmax = 1
+  nx = 400
+  xmin = 0.
+  xmax = 1.
   block_id = '0'
-[]
-
-##############################################################################################
-#                                       FUNCTIONs                                            #
-##############################################################################################
-# Define functions that are used in the kernels and aux. kernels.                            #
-##############################################################################################
-
-[Functions]
-
-  #active = 'area'
-  [./area]
-    type = AreaFunction
-    #value = Ao * ( 1 + 0.5*cos((x-left)/l*pi) ) + Bo
-    left = 0.0
-    length = 1.
-    Ao = 1.0
-    Bo = 0.0
-  [../]
-  
-  [./exact_sol_press]
-    type = ExactSolAreaVariable
-    variable_name = PRESSURE
-    length = 1.
-    eos = eos
-  [../]
-
-  [./exact_sol_dens]
-    type = ExactSolAreaVariable
-    variable_name = DENSITY
-    length = 1.
-    eos = eos
-  [../]
-
-  [./exact_sol_vel]
-    type = ExactSolAreaVariable
-    variable_name = VELOCITY
-    length = 1.
-    eos = eos
-  [../]
-
+#elem_type = EDGE2
 []
 
 #############################################################################
@@ -113,7 +102,7 @@ length = 1.
 [Variables]
   [./rhoA]
     family = LAGRANGE
-    scaling = 1e-1
+    scaling = 1e-6
 	[./InitialCondition]
         type = ConservativeVariables1DXIC
         eos = eos
@@ -123,16 +112,17 @@ length = 1.
 
   [./rhouA]
     family = LAGRANGE
-    scaling = 1e-4
-	[./InitialCondition]
-        type = ConstantIC
-        value = 0.
-	[../]
+    scaling = 1e-6
+    [./InitialCondition]
+        type = ConservativeVariables1DXIC
+        eos = eos
+        area = area
+    [../]
   [../]
 
   [./rhoEA]
     family = LAGRANGE
-    scaling = 1e-4
+    scaling = 1e-10
 	[./InitialCondition]
         type = ConservativeVariables1DXIC
         eos = eos
@@ -233,20 +223,8 @@ length = 1.
 
 [AuxVariables]
 
-   [./press_exact_aux]
-      family = LAGRANGE
-   [../]
-
-   [./vel_exact_aux]
-    family = LAGRANGE
-   [../]
-
-   [./dens_exact_aux]
-    family = LAGRANGE
-   [../]
-
    [./area_aux]
-      family = LAGRANGE
+        family = LAGRANGE
    [../]
 
    [./velocity_aux]
@@ -270,18 +248,14 @@ length = 1.
    [../]
 
    [./temperature_aux]
-    family = LAGRANGE
-   [../]
-
-   [./mach_number_aux]
       family = LAGRANGE
    [../]
 
-   [./norm_vel_aux]
-    family = LAGRANGE
+   [./mach_number_aux]
+       family = LAGRANGE
    [../]
 
-   [./vel_area_aux]
+   [./norm_vel_aux]
     family = LAGRANGE
    [../]
 
@@ -305,11 +279,25 @@ length = 1.
     order = CONSTANT
    [../]
 
-   [./jump_grad_press_aux]
+  [./jump_grad_press_aux]
     family = MONOMIAL
     order = CONSTANT
-   [../]
+  [../]
 
+  [./jump_grad_dens_aux]
+    family = MONOMIAL
+    order = CONSTANT
+  [../]
+
+  [./jump_grad_press_smooth_aux]
+    family = MONOMIAL
+    order = CONSTANT
+  [../]
+
+  [./jump_grad_dens_smooth_aux]
+    family = MONOMIAL
+    order = CONSTANT
+  [../]
 []
 
 ##############################################################################################
@@ -320,28 +308,10 @@ length = 1.
 
 [AuxKernels]
 
-  [./ExactSolPressAK]
-    type = FunctionAux
-    variable = press_exact_aux
-    function = exact_sol_press
-  [../]
-
-  [./ExactSolDensityAK]
-    type = FunctionAux
-    variable = dens_exact_aux
-    function = exact_sol_dens
-  [../]
-
-  [./ExactSolVelAK]
-    type = FunctionAux
-    variable = vel_exact_aux
-    function = exact_sol_vel
-  [../]
-
   [./AreaAK]
-    type = FunctionAux
+    type = AreaAux
     variable = area_aux
-    function = area
+    area = area
   [../]
 
   [./VelAK]
@@ -408,13 +378,6 @@ length = 1.
     x_component = velocity_aux
   [../]
 
-  [./VariableTimesAreaAK]
-    type = VariableTimesAreaAux
-    variable = vel_area_aux
-    var = velocity_aux
-    area = area_aux
-  [../]
-
   [./MuMaxAK]
     type = MaterialRealAux
     variable = mu_max_aux
@@ -438,6 +401,7 @@ length = 1.
     variable = kappa_aux
     property = kappa
    [../]
+
 []
 
 ##############################################################################################
@@ -455,10 +419,14 @@ length = 1.
     pressure = pressure_aux
     density = density_aux
     norm_velocity = norm_vel_aux
-    jump_grad_press = jump_grad_press_aux
+    jump_grad_press = jump_grad_press_smooth_aux
+    jump_grad_dens = jump_grad_dens_smooth_aux
     eos = eos
+    DpressDt_PPS_name = MaxDpressureDt
     rhov2_PPS_name = AverageRhovel2
-    rhoc2_PPS_name = AverageRhoc2
+#    rhocv_PPS_name = AverageRhocvel
+#    rhoc2_PPS_name = AverageRhoc2
+#    press_PPS_name = AveragePressure
   [../]
 
 []
@@ -469,6 +437,21 @@ length = 1.
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
+  [./MaxDpressureDt]
+    type = ElementMaxDuDtValue
+    variable = pressure_aux
+    variable2 = mach_number_aux
+  [../]
+
+#  [./AveragePressure]
+#    type = ElementAverageValue
+#    variable = pressure_aux
+#  [../]
+
+#  [./AverageMachNumber]
+#    type = ElementAverageValue
+#    variable = mach_number_aux
+#  [../]
 
   [./AverageRhovel2]
     type = ElementAverageMultipleValues
@@ -481,52 +464,27 @@ length = 1.
     area = area_aux
   [../]
 
-  [./AverageRhoc2]
-    type = ElementAverageMultipleValues
-    variable = norm_vel_aux
-    output_type = RHOC2
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    eos = eos
-    area = area_aux
-  [../]
+#  [./AverageRhocvel]
+#    type = ElementAverageMultipleValues
+#    variable = norm_vel_aux
+#    output_type = RHOCVEL
+#    rhoA = rhoA
+#    rhouA_x = rhouA
+#    rhoEA = rhoEA
+#    eos = eos
+#    area = area_aux
+#  [../]
 
-  [./L2ErrorPressure]
-    type = ElementL2Error
-    variable = pressure_aux
-    function = exact_sol_press
-  [../]
-
-  [./L2ErrorDensity]
-    type = ElementL2Error
-    variable = density_aux
-    function = exact_sol_dens
-  [../]
-
-  [./L2ErrorVel]
-    type = ElementL2Error
-    variable = velocity_aux
-    function = exact_sol_vel
-  [../]
-
-  [./L1ErrorPressure]
-    type = ElementL1Error
-    variable = pressure_aux
-    function = exact_sol_press
-  [../]
-
-  [./L1ErrorDensity]
-    type = ElementL1Error
-    variable = density_aux
-    function = exact_sol_dens
-  [../]
-
-  [./L1ErrorVel]
-    type = ElementL1Error
-    variable = velocity_aux
-    function = exact_sol_vel
-  [../]
+#  [./AverageRhoc2]
+#    type = ElementAverageMultipleValues
+#    variable = norm_vel_aux
+#    output_type = RHOC2
+#    rhoA = rhoA
+#    rhouA_x = rhouA
+#    rhoEA = rhoEA
+#    eos = eos
+#    area = area_aux
+#  [../]
 []
 
 ##############################################################################################
@@ -535,85 +493,46 @@ length = 1.
 # Define the functions computing the inflow and outflow boundary conditions.                 #
 ##############################################################################################
 [BCs]
-  #active = ' '
+#active = ' '
   [./ContInflowDBC]
-    type = EelStagnationPandTBC
+    type = DirichletBC
     variable = rhoA
-    equation_name = CONTINUITY
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    area = area_aux
-    eos = eos
+    value = 588.33
     boundary = 'left'
   [../]
 
   [./ContOutflowDBC]
-    type = EelStaticPandTBC
+    type = DirichletBC
     variable = rhoA
-    equation_name = CONTINUITY
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    vel_x = velocity_aux    
-    pressure = pressure_aux
-    density = density_aux
-    area = area_aux
-    eos = eos
+    value = 588.33
     boundary = 'right'
   [../]
 
   [./MomInflowDBC]
-    type = EelStagnationPandTBC
+    type = DirichletBC
     variable = rhouA
-    equation_name = XMOMENTUM
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    area = area_aux
-    eos = eos
+    value = -58833.46
     boundary = 'left'
   [../]
 
   [./MomOutflowDBC]
-    type = EelStaticPandTBC
+    type = DirichletBC
     variable = rhouA
-    equation_name = XMOMENTUM
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    vel_x = velocity_aux
-    pressure = pressure_aux
-    density = density_aux
-    area = area_aux
-    eos = eos
+    value = 58833.46
     boundary = 'right'
   [../]
 
   [./EnergyInflowDBC]
-    type = EelStagnationPandTBC
+    type = DirichletBC
     variable = rhoEA
-    equation_name = ENERGY
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    area = area_aux
-    eos = eos
+    value = 779442048.
     boundary = 'left'
   [../]
 
   [./EnergyOutflowDBC]
-    type = EelStaticPandTBC
+    type = DirichletBC
     variable = rhoEA
-    equation_name = ENERGY
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    vel_x = velocity_aux
-    pressure = pressure_aux
-    density = density_aux
-    area = area_aux
-    eos = eos
+    value = 779442048.
     boundary = 'right'
   [../]
 []
@@ -625,25 +544,23 @@ length = 1.
 ##############################################################################################
 
 [Preconditioning]
-  active = 'FDP_Newton'
+    active = 'FDP_Newton'
+    #active = 'SMP_Newton'
   [./FDP_Newton]
     type = FDP
     full = true
-    solve_type = NEWTON
-    petsc_options = '-snes_mf_operator -snes_ksp_ew'
+    solve_type = 'PJFNK'
+#    line_search = 'none'
+    petsc_options = '-snes_ksp_ew'
     petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
     petsc_options_value = '1.e-12       ds             ds'
-    #petsc_options = '-snes_mf_operator -ksp_converged_reason -ksp_monitor -snes_ksp_ew'
-    #petsc_options_iname = '-pc_type'
-    #petsc_options_value = 'lu'
   [../]
 
-  [./SMP]
-  type=SMP
-    full=true
-    petsc_options = '-snes_mf_operator'
-    petsc_options_iname = '-pc_type'
-    petsc_options_value = 'lu'
+  [./SMP_Newton]
+    type = SMP
+    full = true
+    solve_type = 'PJFNK' # PJFNK, JFNK, NEWTON, FD
+    line_search = 'default'
   [../]
 []
 
@@ -655,27 +572,25 @@ length = 1.
 
 [Executioner]
   type = Transient
-  string scheme = 'bdf2'
-  end_time = 1.
-  dt = 1.e-3
-#  [./TimeStepper]
-#    type = FunctionDT
-#    time_t =  '0     2.6e-2'
-#    time_dt = '5e-5  5e-5'
-#  [../]
+  scheme = 'bdf2'
+  end_time = 1826e-5
+  dt = 1.e-7
   dtmin = 1e-9
-  #dtmax = 1e-5
   l_tol = 1e-8
-  nl_rel_tol = 1e-7
-  nl_abs_tol = 1e-6
+  nl_rel_tol = 1e-6
+  nl_abs_tol = 1e-5
   l_max_its = 50
-  nl_max_its = 30
+  nl_max_its = 10
+  [./TimeStepper]
+    type = FunctionDT
+    time_t =  '0      1.e-5  1.e-4'
+    time_dt = '1.e-6  1.e-6  1.e-6'
+  [../]
   [./Quadrature]
     type = TRAP
-    order = TENTH
+    order = SECOND
   [../]
 []
-
 ##############################################################################################
 #                                        OUTPUT                                              #
 ##############################################################################################
@@ -683,11 +598,10 @@ length = 1.
 ##############################################################################################
 
 [Outputs]
-    #file_base = LiquidNozzleEV_nel_8
-    output_initial = true
-    interval = 1
-    console = true
-    exodus = true
-    postprocessor_screen = false
-    perf_log = true
+  output_initial = true
+  postprocessor_screen = false
+  interval = 1
+  console = true
+  exodus = true
+  perf_log = true
 []

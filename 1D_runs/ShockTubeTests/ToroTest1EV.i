@@ -11,9 +11,8 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
-useVelPps = true
-
-#Hw_fn = Hw_fn
+Cjump = 5.
+isLowMachShock = false
 
 ###### Initial Conditions #######
 pressure_init_left = 1.0
@@ -32,11 +31,6 @@ membrane = 0.3
 ##############################################################################################
 
 [Functions]
-#  [./Hw_fn]
-#    type = ParsedFunction
-#    value = 0.
-#  [../]
-
   [./area]
     type = ParsedFunction
     value = 1.
@@ -406,7 +400,8 @@ membrane = 0.3
     jump_grad_press = jump_grad_press_smooth_aux
     jump_grad_dens = jump_grad_dens_smooth_aux
     eos = eos
-    velocity_PPS_name = AverageVelocity
+    rhov2_PPS_name = AverageRhovel2
+    rhoc2_PPS_name = AverageRhoc2
   [../]
 
 []
@@ -417,17 +412,27 @@ membrane = 0.3
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-#  [./MaxVelocity]
-#    type = NodalMaxValue
-#    variable = norm_vel_aux
-#    execute_on = timestep
-#  [../]
-
-  [./AverageVelocity]
-    type = ElementAverageValue
+[./AverageRhovel2]
+    type = ElementAverageMultipleValues
     variable = norm_vel_aux
-    execute_on = timestep
-  [../]
+    output_type = RHOVEL2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+[../]
+
+[./AverageRhoc2]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOC2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+[../]
 []
 
 ##############################################################################################
@@ -522,7 +527,7 @@ membrane = 0.3
   [./TimeStepper]
     type = FunctionDT
     time_t =  '0      2.e-4  0.2'
-    time_dt = '1.e-6  5.e-4  5.e-4'
+    time_dt = '1.e-6  1.e-4  1.e-4'
   [../]
   dtmin = 1e-9
   l_tol = 1e-8
@@ -541,11 +546,11 @@ membrane = 0.3
 # Define the functions computing the inflow and outflow boundary conditions.                 #
 ##############################################################################################
 
-[Output]
-  output_initial = true
-#file_base = ToroTest1
-  postprocessor_screen = false
-  interval = 10
-  exodus = true
-  perf_log = true
+[Outputs]
+    output_initial = true
+    postprocessor_screen = false
+    interval = 1
+    console = true
+    exodus = true
+    perf_log = true
 []

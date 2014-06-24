@@ -17,7 +17,7 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = false
 Ce = 1.
-Cjump = 5.
+Cjump = 4. # 2.7
 
 ###### Initial Conditions #######
 pressure_init_left = 1.e6
@@ -63,7 +63,7 @@ length = 1.
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 200
+  nx = 500
   xmin = 0
   xmax = 1
   block_id = '0'
@@ -410,11 +410,8 @@ length = 1.
     norm_velocity = norm_vel_aux
     jump_grad_press = smooth_jump_grad_press_aux
     eos = eos
-    DpressDt_PPS_name = MaxDpressureDt
     rhov2_PPS_name = AverageRhovel2
-    rhocv_PPS_name = AverageRhocvel
     rhoc2_PPS_name = AverageRhoc2
-    press_PPS_name = AveragePressure
   [../]
 
 []
@@ -425,32 +422,11 @@ length = 1.
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-  [./MaxDpressureDt]
-    type = ElementMaxDuDtValue
-    variable = pressure_aux
-    variable2 = mach_number_aux
-  [../]
-
-  [./AveragePressure]
-    type = ElementAverageAbsValue
-    variable = pressure_aux
-  [../]
 
   [./AverageRhovel2]
     type = ElementAverageMultipleValues
     variable = norm_vel_aux
     output_type = RHOVEL2
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    eos = eos
-    area = area_aux
-  [../]
-
-  [./AverageRhocvel]
-    type = ElementAverageMultipleValues
-    variable = norm_vel_aux
-    output_type = RHOCVEL
     rhoA = rhoA
     rhouA_x = rhouA
     rhoEA = rhoEA

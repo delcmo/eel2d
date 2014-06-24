@@ -10,11 +10,9 @@ order = FIRST
 viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
-#Ce = 1.
-useVelPps = false
-
-
-#Hw_fn = Hw_fn
+Ce = 1.
+Cjump = 5.
+#isLowMachShock = true
 
 ###### Initial Conditions #######
 pressure_init_left = 1000.
@@ -24,7 +22,7 @@ vel_init_right = 0.
 temp_init_left = 1000.
 temp_init_right = 0.01
 membrane = 0.5
-length = 0.02
+length = 0.
 []
 
 ##############################################################################################
@@ -34,10 +32,6 @@ length = 0.02
 ##############################################################################################
 
 [Functions]
-#  [./Hw_fn]
-#    type = ParsedFunction
-#    value = 0.
-#  [../]
 
   [./area]
     type = ParsedFunction
@@ -404,10 +398,11 @@ length = 0.02
     pressure = pressure_aux
     density = density_aux
     norm_velocity = norm_vel_aux
-    jump_grad_press = jump_grad_press_smooth_aux
-    jump_grad_dens = jump_grad_dens_smooth_aux
+    jump_grad_press = jump_grad_press_aux
+    jump_grad_dens = jump_grad_dens_aux
     eos = eos
-    velocity_PPS_name = AverageVelocity
+    rhov2_PPS_name = AverageRhovel2
+    rhoc2_PPS_name = AverageRhoc2
   [../]
 
 []
@@ -418,17 +413,27 @@ length = 0.02
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-#  [./MaxVelocity]
-#    type = NodalMaxValue
-#    variable = norm_vel_aux
-#    execute_on = timestep
-#  [../]
-
-  [./AverageVelocity]
-    type = ElementAverageValue
+[./AverageRhovel2]
+    type = ElementAverageMultipleValues
     variable = norm_vel_aux
-#    execute_on = timestep
-  [../]
+    output_type = RHOVEL2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+[../]
+
+[./AverageRhoc2]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOC2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+[../]
 []
 
 ##############################################################################################
@@ -494,7 +499,7 @@ length = 0.02
     type = FDP
     full = true
     solve_type = 'PJFNK'
-    line_search = 'none'
+    line_search = 'default'
 #petsc_options = '-snes_mf_operator'
     petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
     petsc_options_value = '1.e-12       ds             ds'
@@ -521,13 +526,13 @@ length = 0.02
   type = Transient   # Here we use the Transient Executioner
   scheme = 'bdf2'
   #num_steps = 400
-  end_time = 0.012
+  end_time = 0.01
   #dt = 1e-5
   dtmin = 1e-9
   [./TimeStepper]
     type = FunctionDT
     time_t =  '0      1.e-5  0.012'
-    time_dt = '1.e-7  1.e-5  1.e-5'
+    time_dt = '1.e-5  1.e-5  1.e-5'
   [../]
   #dtmax = 1e-5
   l_tol = 1e-10
@@ -537,6 +542,7 @@ length = 0.02
   nl_max_its = 10
   [./Quadrature]
     type = TRAP
+    order = THIRD
   [../]
 []
 ##############################################################################################
@@ -545,11 +551,11 @@ length = 0.02
 # Define the functions computing the inflow and outflow boundary conditions.                 #
 ##############################################################################################
 
-[Output]
-  output_initial = true
-#file_base = ToroTest3
-  postprocessor_screen = false
-  interval = 4
-  exodus = true
-  perf_log = true
+[Outputs]
+    output_initial = true
+    postprocessor_screen = false
+    interval = 1
+    console = true
+    exodus = true
+    perf_log = true
 []

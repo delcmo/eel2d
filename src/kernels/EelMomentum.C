@@ -83,21 +83,12 @@ Real EelMomentum::computeQpResidual()
     
   // Wall friction term:
     Real _wall_friction = 0.5 * _friction * _rhoA[_qp] * _vector_vel.size() * _vector_vel(_component) / _Dh;
-    /*std::cout<<_wall_friction<<std::endl;
-    std::cout<<"area="<<_area[_qp]<<std::endl;
-    std::cout<<"rho="<<_rho[_qp]<<std::endl;
-    std::cout<<"size vel="<<_vector_vel.size()<<std::endl;
-    std::cout<<"vel="<<_vector_vel(_component)<<std::endl;*/
-    //std::cout<<"friction="<<_friction<<std::endl;
-    //std::cout<<"Dh="<<_Dh<<std::endl;
     
   // Gravity force:
     Real _gravity_force = _gravity(_component) * _rhoA[_qp];
-    //std::cout<<"g="<<_gravity(_component)<<std::endl;
-    //std::cout<<_gravity_force<<std::endl;
     
   // Return the kernel value:
-    return -(_advection*_grad_test[_i][_qp] + _press*_grad_test[_i][_qp](_component) + (_PdA + _wall_friction - _gravity_force)*_test[_i][_qp] );
+    return -( _advection*_grad_test[_i][_qp] + _press*_grad_test[_i][_qp](_component) + (_PdA - _wall_friction - _gravity_force)*_test[_i][_qp] );
 }
 
 Real EelMomentum::computeQpJacobian()

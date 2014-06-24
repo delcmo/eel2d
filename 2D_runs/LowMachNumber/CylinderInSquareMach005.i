@@ -9,7 +9,7 @@ order = FIRST
 viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = false
-Ce = 1.
+Ce = 0.5.
 
 ###### Initial conditions ######
 #p_bc = 101325.

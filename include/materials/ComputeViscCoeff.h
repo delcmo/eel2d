@@ -40,6 +40,8 @@ private:
     
     // Boolean for jump
     bool _isJumpOn;
+    bool _isLowMachShock;
+    bool _isVariableArea;
     
     // Coupled aux variables: velocity
     VariableValue & _vel_x;
@@ -71,6 +73,7 @@ private:
     
     // Jump cross section:
     VariableValue & _area;
+    VariableGradient & _grad_area;
     
     // Material properties
     MaterialProperty<Real> & _mu;
@@ -90,14 +93,13 @@ private:
     // Multiplicative coefficient for viscosity:
     double _Ce;
     double _Cjump;
+    double _Cmax;
     
     // UserObject: equation of state
     const EquationOfState & _eos;
     
     // Name of the posprocessors for pressure, velocity and void fraction:
-    std::string _DpressDt_pps_name;
     std::string _rhov2_pps_name;
-    std::string _rhocv_pps_name;
     std::string _rhoc2_pps_name;
     std::string _press_pps_name;
 };

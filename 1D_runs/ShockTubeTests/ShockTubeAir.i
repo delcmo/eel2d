@@ -10,7 +10,9 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
-Cjump = 5.
+Cjump = 6.
+Cmax = 0.5
+isLowMachShock = true
 
 ###### Initial Conditions #######
 pressure_init_left = 1.e9
@@ -20,7 +22,7 @@ vel_init_right = 0
 temp_init_left = 4.7058824e2
 temp_init_right = 1.765e2
 membrane = 0.5
-length = 1e-6
+length = 0.
 []
 
 ##############################################################################################
@@ -422,11 +424,8 @@ length = 1e-6
     jump_grad_press = jump_grad_press_smooth_aux
     jump_grad_dens = jump_grad_dens_smooth_aux
     eos = eos
-    DpressDt_PPS_name = MaxDpressureDt
     rhov2_PPS_name = AverageRhovel2
-    rhocv_PPS_name = AverageRhocvel
     rhoc2_PPS_name = AverageRhoc2
-    press_PPS_name = AveragePressure
   [../]
 
 []
@@ -437,21 +436,15 @@ length = 1e-6
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-  [./MaxDpressureDt]
-    type = ElementMaxDuDtValue
-    variable = pressure_aux
-    variable2 = mach_number_aux
-  [../]
+#  [./AveragePressure]
+#    type = ElementAverageValue
+#    variable = pressure_aux
+#  [../]
 
-  [./AveragePressure]
-    type = ElementAverageValue
-    variable = pressure_aux
-  [../]
-
-  [./AverageMachNumber]
-    type = ElementAverageValue
-    variable = mach_number_aux
-  [../]
+#  [./AverageMachNumber]
+#    type = ElementAverageValue
+#    variable = mach_number_aux
+#  [../]
 
   [./AverageRhovel2]
     type = ElementAverageMultipleValues
@@ -464,16 +457,16 @@ length = 1e-6
     area = area_aux
   [../]
 
-  [./AverageRhocvel]
-    type = ElementAverageMultipleValues
-    variable = norm_vel_aux
-    output_type = RHOCVEL
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    eos = eos
-    area = area_aux
-  [../]
+#  [./AverageRhocvel]
+#    type = ElementAverageMultipleValues
+#   variable = norm_vel_aux
+#    output_type = RHOCVEL
+#    rhoA = rhoA
+#    rhouA_x = rhouA
+#    rhoEA = rhoEA
+#    eos = eos
+#    area = area_aux
+#  [../]
 
   [./AverageRhoc2]
     type = ElementAverageMultipleValues
@@ -545,12 +538,12 @@ length = 1e-6
 
 [Preconditioning]
     active = 'FDP_Newton'
-    #active = 'SMP_Newton'
+#active = 'SMP_Newton'
   [./FDP_Newton]
     type = FDP
     full = true
     solve_type = 'PJFNK'
-#    line_search = 'none'
+    line_search = 'default'
     petsc_options = '-snes_ksp_ew'
     petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
     petsc_options_value = '1.e-12       ds             ds'
@@ -577,8 +570,8 @@ length = 1e-6
   dt = 1.e-7
   dtmin = 1e-9
   l_tol = 1e-8
-  nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-5
+  nl_rel_tol = 1e-8
+  nl_abs_tol = 1e-8
   l_max_its = 50
   nl_max_its = 10
   [./TimeStepper]
@@ -588,7 +581,7 @@ length = 1e-6
   [../]
   [./Quadrature]
     type = GAUSS
-    order = FOURTH
+    order = SECOND
   [../]
 []
 ##############################################################################################

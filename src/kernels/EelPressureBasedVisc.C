@@ -30,8 +30,6 @@ InputParameters validParams<EelPressureBasedVisc>()
     params.addParam<Real>("alpha", 1., "coefficient alpha used in the definition of the pressure based viscosity: (0,1)");
     // Name of the pressure based viscosity type:
     params.addParam<std::string>("viscosity_name", "JST", "Name of the pressure-based viscosity to use.");
-    // Userobject:
-    params.addRequiredParam<UserObjectName>("eos", "Equation of state");
   return params;
 }
 
@@ -66,32 +64,32 @@ EelPressureBasedVisc::EelPressureBasedVisc(const std::string & name,
 
 Real EelPressureBasedVisc::computeQpResidual()
 {
-    Real _h = _current_elem->hmin();
+//    Real _h = _current_elem->hmin();
     Real _eps = std::sqrt(std::numeric_limits<Real>::min());
     
     // Initialyze the pps:
-    Real _average_press = getPostprocessorValueByName(_average_press_nm);
-    Real _average_grad_press = getPostprocessorValueByName(_average_grad_press_nm);
+//    Real _average_press = getPostprocessorValueByName(_average_press_nm);
+//    Real _average_grad_press = getPostprocessorValueByName(_average_grad_press_nm);
     
     // Compute denominator:
     Real _den = 0.;
-    switch (_visc_type) {
-        case JST:
-            _den = _average_press;
-            break;
-        case HMP:
-            _den = (1-_alpha)*_h*_average_grad_press;
-            break;
-        case ST:
-            _den = _alpha*_h*_average_grad_press + (1-_alpha)*_average_press;
-        default:
-            mooseError("Invalid viscosity type.");
-            break;
-    }
+//    switch (_visc_type) {
+//        case JST:
+//            _den = _average_press;
+//            break;
+//        case HMP:
+//            _den = (1-_alpha)*_h*_average_grad_press;
+//            break;
+//        case ST:
+//            _den = _alpha*_h*_average_grad_press + (1-_alpha)*_average_press;
+//        default:
+//            mooseError("Invalid viscosity type.");
+//            break;
+//    }
     //std::cout<<_den<<std::endl;
     //std::cout<<_grad_press[_qp](0)<<std::endl;
     // Return the weak form:
-    return _u[_qp]*_test[_i][_qp] + _h*_grad_press[_qp]*_grad_test[_i][_qp] / _den;
+    return _u[_qp]*_test[_i][_qp] + _grad_press[_qp]*_grad_test[_i][_qp];
 }
 
 Real EelPressureBasedVisc::computeQpJacobian()

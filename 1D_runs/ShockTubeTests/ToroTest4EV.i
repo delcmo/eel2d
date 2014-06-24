@@ -11,9 +11,8 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
-useVelPps = true
-
-#Hw_fn = Hw_fn
+Cjump = 5.
+isLowMachShock = false
 
 ###### Initial Conditions #######
 pressure_init_left = 460.894
@@ -33,10 +32,6 @@ length = 0.
 ##############################################################################################
 
 [Functions]
-#  [./Hw_fn]
-#    type = ParsedFunction
-#    value = 0.
-#  [../]
 
   [./area]
     type = ParsedFunction
@@ -402,10 +397,11 @@ length = 0.
     pressure = pressure_aux
     density = density_aux
     norm_velocity = norm_vel_aux
-    jump_grad_press = jump_grad_press_smooth_aux
-    jump_grad_dens = jump_grad_dens_smooth_aux
+    jump_grad_press = jump_grad_press_aux
+    jump_grad_dens = jump_grad_dens_aux
     eos = eos
-    velocity_PPS_name = AverageVelocity
+    rhov2_PPS_name = AverageRhovel2
+    rhoc2_PPS_name = AverageRhoc2
   [../]
 
 []
@@ -416,17 +412,27 @@ length = 0.
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-#  [./MaxVelocity]
-#    type = NodalMaxValue
-#    variable = norm_vel_aux
-#    execute_on = timestep
-#  [../]
-
-  [./AverageVelocity]
-    type = ElementAverageValue
+[./AverageRhovel2]
+    type = ElementAverageMultipleValues
     variable = norm_vel_aux
-#    execute_on = timestep
-  [../]
+    output_type = RHOVEL2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+[../]
+
+[./AverageRhoc2]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOC2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+[../]
 []
 
 ##############################################################################################
@@ -518,7 +524,7 @@ length = 0.
   string scheme = 'bdf2'
   #num_steps = 400
   end_time = 0.035
-  dt = 5.e-5
+  dt = 1.e-5
   dtmin = 1e-9
   #dtmax = 1e-5
   l_tol = 1e-8
@@ -528,6 +534,7 @@ length = 0.
   nl_max_its = 30
   [./Quadrature]
     type = TRAP
+    order = THIRD
   [../]
 []
 ##############################################################################################
@@ -536,11 +543,11 @@ length = 0.
 # Define the functions computing the inflow and outflow boundary conditions.                 #
 ##############################################################################################
 
-[Output]
-  output_initial = true
-  #file_base = ToroTest4
-  postprocessor_screen = false
-  interval = 5
-  exodus = true
-  perf_log = true
+[Outputs]
+    output_initial = true
+    postprocessor_screen = false
+    interval = 1
+    console = true
+    exodus = true
+    perf_log = true
 []

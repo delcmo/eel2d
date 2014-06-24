@@ -584,7 +584,7 @@ membrane = 0.5
 # Define the functions computing the inflow and outflow boundary conditions.                 #
 ##############################################################################################
 
-[Output]
+[Outputs]
   file_base = LiquidWallHeatMassFlowEVn200
   output_initial = true
   interval = 1

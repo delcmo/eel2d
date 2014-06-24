@@ -30,6 +30,8 @@
 // BCs
 #include "EelStagnationPandTBC.h"
 #include "EelStaticPandTBC.h"
+#include "EelHRhoUBC.h"
+#include "EelMomentumHRhoUDBC.h"
 #include "EelWallBC.h"
 #include "EelInfiniteBC.h"
 #include "EelDBC.h"
@@ -60,6 +62,7 @@
 #include "NodalMinMultipleValues.h"
 #include "NodalMaxMultipleValues.h"
 #include "ElementMaxDuDtValue.h"
+#include "ElementL1Error.h"
 
 // UserObjects
 #include "EquationOfState.h"
@@ -105,6 +108,8 @@ namespace Eel2d
       // BCs
       registerBoundaryCondition(EelStagnationPandTBC);
       registerBoundaryCondition(EelStaticPandTBC);
+      registerBoundaryCondition(EelHRhoUBC);
+      registerBoundaryCondition(EelMomentumHRhoUDBC);
       registerBoundaryCondition(EelWallBC);
       registerBoundaryCondition(EelInfiniteBC);
       registerBoundaryCondition(EelDBC);
@@ -135,6 +140,7 @@ namespace Eel2d
       registerPostprocessor(NodalMinMultipleValues);
       registerPostprocessor(NodalMaxMultipleValues);
       registerPostprocessor(ElementMaxDuDtValue);
+      registerPostprocessor(ElementL1Error);
       //UserObjects
       registerUserObject(EquationOfState);
       registerUserObject(StiffenedGasEquationOfState);

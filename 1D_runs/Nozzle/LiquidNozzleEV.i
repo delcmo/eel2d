@@ -17,13 +17,13 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
-Cjump = 1.
+Cjump = 0.
 
 ###### Initial Conditions #######
 pressure_init_left = 1.e6
 pressure_init_right = 0.5e6
-vel_init_left = 0
-vel_init_right = 0
+vel_init_left = 0.
+vel_init_right = 0.
 temp_init_left = 453
 temp_init_right = 453
 membrane = 0.5
@@ -109,10 +109,11 @@ length = 1.
   [./rhouA]
     family = LAGRANGE
     scaling = 1e-4
-	[./InitialCondition]
-        type = ConstantIC
-        value = 0.
-	[../]
+    [./InitialCondition]
+        type = ConservativeVariables1DXIC
+        eos = eos
+        area = area
+    [../]
   [../]
 
   [./rhoEA]
@@ -415,15 +416,11 @@ length = 1.
     density = density_aux
     norm_velocity = norm_vel_aux
     jump_grad_press = jump_grad_press_aux
-    jump_grad_dens = jump_grad_dens_aux
+#jump_grad_dens = jump_grad_dens_aux
     eos = eos
-    DpressDt_PPS_name = MaxDpressureDt
     rhov2_PPS_name = AverageRhovel2
-    rhocv_PPS_name = AverageRhocvel
     rhoc2_PPS_name = AverageRhoc2
-    press_PPS_name = AveragePressure
   [../]
-
 []
 
 ##############################################################################################
@@ -432,12 +429,6 @@ length = 1.
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-  [./MaxDpressureDt]
-    type = ElementMaxDuDtValue
-    variable = pressure_aux
-    variable2 = mach_number_aux
-  [../]
-
   [./AveragePressure]
     type = ElementAverageAbsValue
     variable = pressure_aux
@@ -447,17 +438,6 @@ length = 1.
     type = ElementAverageMultipleValues
     variable = norm_vel_aux
     output_type = RHOVEL2
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    eos = eos
-    area = area_aux
-  [../]
-
-  [./AverageRhocvel]
-    type = ElementAverageMultipleValues
-    variable = norm_vel_aux
-    output_type = RHOCVEL
     rhoA = rhoA
     rhouA_x = rhouA
     rhoEA = rhoEA
@@ -568,7 +548,7 @@ length = 1.
   [./FDP_Newton]
     type = FDP
     full = true
-    solve_type = 'PJFNK' # NEWTON
+    solve_type = 'PJFNK'
     petsc_options = '-snes_mf_operator -snes_ksp_ew'
     petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
     petsc_options_value = '1.e-10       ds             ds'
@@ -594,24 +574,24 @@ length = 1.
 
 [Executioner]
   type = Transient
-  string scheme = 'bdf2'
-  end_time = 1.
+  scheme = 'bdf2'
+  end_time = 2.
   dt = 1.e-3
-#  [./TimeStepper]
-#    type = FunctionDT
-#    time_t =  '0     2.6e-2'
-#    time_dt = '5e-5  5e-5'
-#  [../]
+  [./TimeStepper]
+    type = FunctionDT
+    time_t =  '0     2.6e-2'
+    time_dt = '1e-2  1e-2'
+  [../]
   dtmin = 1e-9
   #dtmax = 1e-5
   l_tol = 1e-8
-  nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-5
+  nl_rel_tol = 1e-7
+  nl_abs_tol = 1e-6
   l_max_its = 50
   nl_max_its = 10
   [./Quadrature]
     type = TRAP
-    order = THIRD
+    order = FIRST
   [../]
 []
 
@@ -627,6 +607,4 @@ length = 1.
     interval = 1
     console = true
     exodus = true
-    postprocessor_screen = false
-    perf_log = true
 []

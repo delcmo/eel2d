@@ -10,9 +10,9 @@ order = FIRST
 viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
-#Ce = 1.
-
-#Hw_fn = Hw_fn
+Ce = 1.
+Cjump = 5.
+isLowMachShock = false
 
 ###### Initial Conditions #######
 pressure_init_left = 0.4
@@ -93,7 +93,7 @@ length = 0.
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 100
+  nx = 400
   xmin = 0
   xmax = 1
   block_id = '0'
@@ -405,7 +405,8 @@ length = 0.
     jump_grad_press = jump_grad_press_smooth_aux
     jump_grad_dens = jump_grad_dens_smooth_aux
     eos = eos
-    velocity_PPS_name = AverageVelocity
+    rhov2_PPS_name = AverageRhovel2
+    rhoc2_PPS_name = AverageRhoc2
   [../]
 
 []
@@ -416,17 +417,27 @@ length = 0.
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
-#  [./MaxVelocity]
-#    type = NodalMaxValue
-#    variable = norm_vel_aux
-#    execute_on = timestep
-#  [../]
-
-  [./AverageVelocity]
-    type = ElementAverageValue
+[./AverageRhovel2]
+    type = ElementAverageMultipleValues
     variable = norm_vel_aux
-#    execute_on = timestep
-  [../]
+    output_type = RHOVEL2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+[../]
+
+[./AverageRhoc2]
+    type = ElementAverageMultipleValues
+    variable = norm_vel_aux
+    output_type = RHOC2
+    rhoA = rhoA
+    rhouA_x = rhouA
+    rhoEA = rhoEA
+    eos = eos
+    area = area_aux
+[../]
 []
 
 ##############################################################################################
@@ -547,11 +558,11 @@ length = 0.
 # Define the functions computing the inflow and outflow boundary conditions.                 #
 ##############################################################################################
 
-[Output]
-  output_initial = true
-#file_base = ToroTest2
-  postprocessor_screen = false
-  interval = 4
-  exodus = true
-  perf_log = true
+[Outputs]
+    output_initial = true
+    postprocessor_screen = false
+    interval = 1
+    console = true
+    exodus = true
+    perf_log = true
 []
