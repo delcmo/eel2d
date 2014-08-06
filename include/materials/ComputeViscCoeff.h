@@ -29,19 +29,23 @@ private:
         ENTROPY = 3,
         PRESSURE_BASED = 4
     };
-    // Artificial diffusion name
     std::string _visc_name;
-    
-    // Aritifical diffusion type
     MooseEnum _visc_type;
     
     // Pressure-based viscosity:
+    enum PBType
+    {
+        JST = 0,
+        HMP = 1,
+        ST = 2
+    };
     VariableValue & _PBVisc;
+    std::string _norm_pbs_name;
+    MooseEnum _norm_pbs_type;
     
     // Boolean for jump
     bool _isJumpOn;
-    bool _isLowMachShock;
-    bool _isVariableArea;
+    bool _isShock;
     
     // Coupled aux variables: velocity
     VariableValue & _vel_x;

@@ -17,7 +17,7 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
-Cjump = 0.
+Cjump = 1.
 
 ###### Initial Conditions #######
 pressure_init_left = 1.e6
@@ -590,8 +590,8 @@ length = 1.
   l_max_its = 50
   nl_max_its = 10
   [./Quadrature]
-    type = TRAP
-    order = FIRST
+    type = GAUSS
+    order = SECOND
   [../]
 []
 

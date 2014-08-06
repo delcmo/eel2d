@@ -7,8 +7,7 @@ InputParameters validParams<ComputeViscCoeff>()
     params.addParam<std::string>("viscosity_name", "FIRST_ORDER", "Name of the viscosity definition to use: set to LAPIDUS by default.");
     params.addCoupledVar("PBVisc", "Pressure-based variable.");
     params.addParam<bool>("isJumpOn", true, "Is jump on?.");
-    params.addParam<bool>("isLowMachShock", false, "Is a low Mach shock?.");
-    params.addParam<bool>("isVariableArea", false, "Is variable area?.");
+    params.addParam<bool>("isShock", false, "Is a low Mach shock?.");
     params.addRequiredCoupledVar("velocity_x", "x component of the velocity");
     params.addCoupledVar("velocity_y", "y component of the velocity");
     params.addCoupledVar("velocity_z", "z component of the velocity");
@@ -18,7 +17,8 @@ InputParameters validParams<ComputeViscCoeff>()
     params.addCoupledVar("jump_grad_press", "jump of pressure gradient");
     params.addCoupledVar("jump_grad_dens", "jump of density gradient");
     params.addCoupledVar("jump_grad_area", "jump of cross-section gradient");
-    params.addCoupledVar("area", "cross-section");
+    params.addCoupledVar("area", 1., "cross-section");
+    params.addParam<std::string>("pbs_name", "JST", "Name of the pressure-based viscosity to use.");
     // Wall heat tranfer
     params.addParam<std::string>("Hw_fn_name", "Function name for the wall heat transfer.");
     params.addParam<std::string>("Tw_fn_name", "Function name for the wall temperature.");
@@ -42,12 +42,14 @@ ComputeViscCoeff::ComputeViscCoeff(const std::string & name, InputParameters par
     Material(name, parameters),
     // Declare viscosity types
     _visc_name(getParam<std::string>("viscosity_name")),
-    _visc_type("LAPIDUS, FIRST_ORDER, FIRST_ORDER_MACH, ENTROPY, PRESSURE_BASED, INVALID", "INVALID"),
+    _visc_type("LAPIDUS, FIRST_ORDER, FIRST_ORDER_MACH, ENTROPY, PRESSURE_BASED, INVALID", _visc_name),
     // Pressure-based variables:
     _PBVisc(isCoupled("PBVisc") ? coupledValue("PBVisc") : _zero),
+    _norm_pbs_name(getParam<std::string>("pbs_name")),
+    _norm_pbs_type("JST, HMP, ST, INVALID", _norm_pbs_name),
+    // Booleans
     _isJumpOn(getParam<bool>("isJumpOn")),
-    _isLowMachShock(getParam<bool>("isLowMachShock")),
-    _isVariableArea(getParam<bool>("isVariableArea")),
+    _isShock(getParam<bool>("isShock")),
     // Declare aux variables: velocity
     _vel_x(coupledValue("velocity_x")),
     _vel_y(_mesh.dimension()>=2 ? coupledValue("velocity_y") : _zero),
@@ -71,7 +73,7 @@ ComputeViscCoeff::ComputeViscCoeff(const std::string & name, InputParameters par
     // Jump of pressure and density gradients:
     _jump_grad_press(isCoupled("jump_grad_press") ? coupledValue("jump_grad_press") : _zero),
     _jump_grad_dens(isCoupled("jump_grad_dens") ? coupledValue("jump_grad_dens") : _zero),
-    _area(isCoupled("area") ? coupledValue("area") : _zero),
+    _area(coupledValue("area")),
     _grad_area(isCoupled("area") ? coupledGradient("area") : _grad_zero),
     // Declare material properties
     _mu(declareProperty<Real>("mu")),
@@ -97,7 +99,6 @@ ComputeViscCoeff::ComputeViscCoeff(const std::string & name, InputParameters par
     _rhoc2_pps_name(getParam<std::string>("rhoc2_PPS_name")),
     _press_pps_name(getParam<std::string>("press_PPS_name"))
 {
-    _visc_type = _visc_name;
     if (_Ce < 0.)
         mooseError("The coefficient Ce has to be positive and cannot be larger than 2.");
     if (isCoupled("PBVisc")==false && _visc_type==PRESSURE_BASED) {
@@ -117,7 +118,7 @@ ComputeViscCoeff::computeQpProperties()
     _kappa_max[_qp] = _Cmax*_h*(_norm_vel[_qp] + c);
     
     // Epsilon value normalization of unit vectors:
-    _h = _current_elem->hmin()/_qrule->get_order();
+//    _h = _current_elem->hmin()/_qrule->get_order();
     Real eps = std::sqrt(std::numeric_limits<Real>::min());
     
     // Compute Mach number and velocity variable to use in the noramlization parameter:
@@ -166,7 +167,7 @@ ComputeViscCoeff::computeQpProperties()
             break;
         case ENTROPY:
             // Compute the viscosity coefficients:
-            if (_t_step == 1) {
+            if (_t_step == -1) {
                 _mu[_qp] = _kappa_max[_qp];
                 _kappa[_qp] = _kappa_max[_qp];
             }
@@ -192,24 +193,28 @@ ComputeViscCoeff::computeQpProperties()
                 
                 // Compute kappa_e:
                 if (_isJumpOn)
-                    jump = _Cjump*_norm_vel[_qp]*std::max( _jump_grad_press[_qp], c*c*_jump_grad_dens[_qp]/Mach );
+                    jump = _Cjump*_norm_vel[_qp]*std::max( _jump_grad_press[_qp], c*c*_jump_grad_dens[_qp] );
                 else
-                    jump = _Cjump*_norm_vel[_qp]*std::max( _grad_press[_qp].size(), c*c*_grad_rho[_qp].size()/Mach );
-                norm = 0.5*(std::fabs(1.-Mach)*_rho[_qp]*c*c + Mach*_rho[_qp]*std::min(_norm_vel[_qp]*_norm_vel[_qp], c*c));
-//                norm = 0.5*_rho[_qp]*c*c;
-                kappa_e = _h*_h*(std::fabs(residual) + jump) / norm;// + _Cjump*std::fabs(vel*_grad_area[_qp])/_area[_qp]);
+                    jump = _Cjump*_norm_vel[_qp]*std::max( _grad_press[_qp].size(), c*c*_grad_rho[_qp].size() );
+//                norm = 0.5*(std::fabs(1.-Mach)*_rho[_qp]*c*c + Mach*_rho[_qp]*std::min(_norm_vel[_qp]*_norm_vel[_qp], c*c));
+                norm = 0.5 * _rho[_qp] * c * c;
+                kappa_e = _h*_h*(std::fabs(residual) + jump) / norm;
+                kappa_e += _h*_h*std::fabs(vel*_grad_area[_qp])/_area[_qp];
 
                 // Compute mu_e:
                 if (_isJumpOn)
-                    jump = _Cjump*_norm_vel[_qp]*std::max( _jump_grad_press[_qp], c*c*_jump_grad_dens[_qp]*Mach );
+                    jump = _Cjump*_norm_vel[_qp]*std::max( _jump_grad_press[_qp], c*c*_jump_grad_dens[_qp] );
                 else
-                    jump = _Cjump*_norm_vel[_qp]*std::max( _grad_press[_qp].size(), c*c*_grad_rho[_qp].size()*Mach );
-                norm = std::max(_rho[_qp]*std::min(_norm_vel[_qp]*_norm_vel[_qp], c*c), (1.-Mach)*rhov2_pps );
-                norm *= 0.5;
-                mu_e = _h*_h*(std::fabs(residual) + jump) / norm;// + _Cjump*std::fabs(vel*_grad_area[_qp])/_area[_qp]);
+                    jump = _Cjump*_norm_vel[_qp]*std::max( _grad_press[_qp].size(), c*c*_grad_rho[_qp].size() );
+                
+                if (_isShock)
+                    norm = 0.5 * std::max(_rho[_qp]*std::min(_norm_vel[_qp]*_norm_vel[_qp], c*c), (1.-Mach)*rhov2_pps );
+                
+                mu_e = _h*_h*(std::fabs(residual) + jump) / norm;
+                mu_e += _h*_h*std::fabs(vel*_grad_area[_qp])/_area[_qp];
 
                 // Compute mu and kappa:
-                _mu[_qp] = std::min( _kappa_max[_qp], kappa_e);
+                _mu[_qp] = std::min( _kappa_max[_qp], mu_e);
                 _kappa[_qp] = std::min( _kappa_max[_qp], kappa_e);
             }
             break;
@@ -219,7 +224,21 @@ ComputeViscCoeff::computeQpProperties()
                 _kappa[_qp] = _kappa_max[_qp];
             }
             else {
-                _mu[_qp] = _Ce*_h*_h*(_norm_vel[_qp] + c)*std::fabs(_PBVisc[_qp]);
+                    switch (_norm_pbs_type)
+                    {
+                        case JST:
+                            norm = std::fabs(_pressure[_qp]);
+                            break;
+                        case HMP:
+                            norm = _h*_grad_press[_qp].size();
+                            break;
+                        case ST:
+                            norm = 0.5*_h*_grad_press[_qp].size() + 0.5*std::fabs(_pressure[_qp]);
+                        default:
+                            mooseError("Invalid viscosity type.");
+                            break;
+                    }
+                _mu[_qp] = _Ce*_h*_h*_h*(_norm_vel[_qp] + c)*std::fabs(_PBVisc[_qp]) / norm;
                 _kappa[_qp] = _mu[_qp];
             }
             break;

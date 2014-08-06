@@ -7,12 +7,11 @@
 [GlobalParams]
 ###### Other parameters #######
 order = FIRST
-viscosity_name = ENTROPY
+viscosity_name = PRESSURE_BASED
 diffusion_name = ENTROPY
 isJumpOn = true
-Ce = 1.
+Ce = 2.
 Cjump = 5.
-isLowMachShock = false
 
 ###### Initial Conditions #######
 pressure_init_left = 1.0
@@ -50,7 +49,7 @@ membrane = 0.3
   	Pinf = 0
   	q = 0.
   	Cv = 2.5
-  	q_prime = 0.# reference entropy
+  	q_prime = 0.
   [../]
 
   [./JumpGradPress]
@@ -87,11 +86,10 @@ membrane = 0.3
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 500
+  nx = 300
   xmin = 0
   xmax = 1
   block_id = '0'
-#elem_type = EDGE3
 []
 
 #############################################################################
@@ -165,7 +163,7 @@ membrane = 0.3
   [../]
 
   [./MUPTime]
-    type = EelTimeDerivative
+    type = MassMatrix
     variable = mu_p
   [../]
 
@@ -233,7 +231,6 @@ membrane = 0.3
     type = EelPressureBasedVisc
     variable = mu_p
     pressure = pressure_aux
-    viscosity_name = JST
   [../]
 []
 
@@ -418,11 +415,11 @@ membrane = 0.3
     pressure = pressure_aux
     density = density_aux
     norm_velocity = norm_vel_aux
+    PBVisc = mu_p
     jump_grad_press = jump_grad_press_smooth_aux
     jump_grad_dens = jump_grad_dens_smooth_aux
     eos = eos
     rhov2_PPS_name = AverageRhovel2
-    rhoc2_PPS_name = AverageRhoc2
   [../]
 
 []
@@ -433,21 +430,11 @@ membrane = 0.3
 # Define functions that are used in the kernels and aux. kernels.                            #
 ##############################################################################################
 [Postprocessors]
+active = ' '
 [./AverageRhovel2]
     type = ElementAverageMultipleValues
     variable = norm_vel_aux
     output_type = RHOVEL2
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    eos = eos
-    area = area_aux
-[../]
-
-[./AverageRhoc2]
-    type = ElementAverageMultipleValues
-    variable = norm_vel_aux
-    output_type = RHOC2
     rhoA = rhoA
     rhouA_x = rhouA
     rhoEA = rhoEA
@@ -462,7 +449,6 @@ membrane = 0.3
 # Define the functions computing the inflow and outflow boundary conditions.                 #
 ##############################################################################################
 [BCs]
-#active = ' '
   [./ContInflowDBC]
     type = DirichletBC
     variable = rhoA
@@ -513,13 +499,13 @@ membrane = 0.3
 ##############################################################################################
 
 [Preconditioning]
-#active = 'FDP_Newton'
-    active = 'SMP_Newton'
+  active = 'FDP_Newton'
+#    active = 'SMP_Newton'
   [./FDP_Newton]
     type = FDP
     full = true
     solve_type = 'PJFNK'
-    petsc_options = '-snes_mf_operator -snes_ksp_ew'
+#    petsc_options = '-snes_mf_operator -snes_ksp_ew'
     petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
     petsc_options_value = '1.e-12       ds             ds'
   [../]
@@ -539,10 +525,8 @@ membrane = 0.3
 ##############################################################################################
 
 [Executioner]
-  type = Transient   # Here we use the Transient Executioner
-  string scheme = 'bdf2'
-  #rk_scheme = 'sdirk33'
-  #num_steps = 400
+  type = Transient
+  scheme = 'bdf2'
   end_time = 0.2
   dt = 6.e-4
   [./TimeStepper]
@@ -552,8 +536,8 @@ membrane = 0.3
   [../]
   dtmin = 1e-9
   l_tol = 1e-8
-  nl_rel_tol = 1e-5
-  nl_abs_tol = 1e-5
+  nl_rel_tol = 1e-10
+  nl_abs_tol = 1e-8
   l_max_its = 50
   nl_max_its = 10
   [./Quadrature]

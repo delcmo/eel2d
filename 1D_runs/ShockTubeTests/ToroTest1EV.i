@@ -12,7 +12,7 @@ diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
 Cjump = 5.
-isLowMachShock = false
+isShock = true
 
 ###### Initial Conditions #######
 pressure_init_left = 1.0
@@ -22,6 +22,7 @@ vel_init_right = 0
 temp_init_left = 1.
 temp_init_right = 0.8
 membrane = 0.3
+length = 0.
 []
 
 ##############################################################################################
@@ -401,7 +402,7 @@ membrane = 0.3
     jump_grad_dens = jump_grad_dens_smooth_aux
     eos = eos
     rhov2_PPS_name = AverageRhovel2
-    rhoc2_PPS_name = AverageRhoc2
+#    rhoc2_PPS_name = AverageRhoc2
   [../]
 
 []
@@ -423,16 +424,16 @@ membrane = 0.3
     area = area_aux
 [../]
 
-[./AverageRhoc2]
-    type = ElementAverageMultipleValues
-    variable = norm_vel_aux
-    output_type = RHOC2
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    eos = eos
-    area = area_aux
-[../]
+#[./AverageRhoc2]
+#    type = ElementAverageMultipleValues
+#    variable = norm_vel_aux
+#    output_type = RHOC2
+#    rhoA = rhoA
+#    rhouA_x = rhouA
+#    rhoEA = rhoEA
+#    eos = eos
+#    area = area_aux
+#[../]
 []
 
 ##############################################################################################
@@ -518,16 +519,16 @@ membrane = 0.3
 ##############################################################################################
 
 [Executioner]
-  type = Transient   # Here we use the Transient Executioner
-  string scheme = 'bdf2'
+  type = Transient
+  scheme = 'bdf2'
   #rk_scheme = 'sdirk33'
   #num_steps = 400
   end_time = 0.2
   dt = 6.e-4
   [./TimeStepper]
     type = FunctionDT
-    time_t =  '0      2.e-4  0.2'
-    time_dt = '1.e-6  1.e-4  1.e-4'
+    time_t =  '0      4.e-4  0.2'
+    time_dt = '1.e-6  2.e-4  2.e-4'
   [../]
   dtmin = 1e-9
   l_tol = 1e-8

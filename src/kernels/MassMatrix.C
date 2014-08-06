@@ -12,34 +12,28 @@
 /*            See COPYRIGHT for full restrictions               */
 /****************************************************************/
 
-#ifndef EELPRESSUREBASEDVISC_H
-#define EELPRESSUREBASEDVISC_H
-
-#include "Kernel.h"
-#include "EquationOfState.h"
-
-class EelPressureBasedVisc;
+#include "MassMatrix.h"
 
 template<>
-InputParameters validParams<EelPressureBasedVisc>();
-class EelPressureBasedVisc : public Kernel
+InputParameters validParams<MassMatrix>()
 {
-public:
+  InputParameters params = validParams<TimeDerivative>();
+  return params;
+}
 
-  EelPressureBasedVisc(const std::string & name,
-             InputParameters parameters);
+MassMatrix::MassMatrix(const std::string & name,
+                                             InputParameters parameters) :
+    TimeDerivative(name,parameters)
+{}
 
-protected:
- 
-  virtual Real computeQpResidual();
+Real
+MassMatrix::computeQpResidual()
+{
+    return _u[_qp] * _test[_i][_qp];
+}
 
-  virtual Real computeQpJacobian();
-
-  virtual Real computeQpOffDiagJacobian( unsigned int jvar );
-
-private:
-    // Coupled variables
-    VariableGradient & _grad_press;
-};
-
-#endif // EELPRESSUREBASEDVISC_H
+Real
+MassMatrix::computeQpJacobian()
+{
+    return _test[_j][_qp] * _test[_i][_qp];
+}

@@ -12,7 +12,7 @@ diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
 Cjump = 5.
-isLowMachShock = false
+isShock = true
 
 ###### Initial Conditions #######
 pressure_init_left = 1.
@@ -21,7 +21,7 @@ vel_init_left = 0.
 vel_init_right = 0.
 temp_init_left = 0.7142
 temp_init_right = 1.
-membrane = 0.8
+membrane = 0.5
 length = 0.
 []
 
@@ -46,7 +46,7 @@ length = 0.
 
 [UserObjects]
   [./eos]
-    type = EquationOfState
+    type = StiffenedGasEquationOfState
   	gamma = 1.4
   	Pinf = 0
   	q = 0.
@@ -87,7 +87,7 @@ length = 0.
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 50
+  nx = 500
   xmin = 0
   xmax = 1
   block_id = '0'
@@ -400,7 +400,7 @@ length = 0.
     jump_grad_dens = jump_grad_dens_aux
     eos = eos
     rhov2_PPS_name = AverageRhovel2
-    rhoc2_PPS_name = AverageRhoc2
+#    rhoc2_PPS_name = AverageRhoc2
   [../]
 
 []
@@ -422,16 +422,16 @@ length = 0.
     area = area_aux
 [../]
 
-[./AverageRhoc2]
-    type = ElementAverageMultipleValues
-    variable = norm_vel_aux
-    output_type = RHOC2
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    eos = eos
-    area = area_aux
-[../]
+#[./AverageRhoc2]
+#    type = ElementAverageMultipleValues
+#    variable = norm_vel_aux
+#    output_type = RHOC2
+#    rhoA = rhoA
+#    rhouA_x = rhouA
+#    rhoEA = rhoEA
+#    eos = eos
+#    area = area_aux
+#[../]
 []
 
 ##############################################################################################
@@ -522,21 +522,21 @@ length = 0.
 ##############################################################################################
 
 [Executioner]
-  type = Transient   # Here we use the Transient Executioner
+  type = Transient
   #scheme = 'explicit-euler'
-  string scheme = 'bdf2'
+  scheme = 'bdf2'
   #num_steps = 400
   end_time = 2.
-  dt = 1e-2
+  dt = 1e-4
   dtmin = 1e-9
   #dtmax = 1e-5
   l_tol = 1e-8
-  nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-6
+  nl_rel_tol = 1e-10
+  nl_abs_tol = 1e-7
   l_max_its = 50
   nl_max_its = 30
   [./Quadrature]
-    type = TRAP
+    type = GAUSS
   [../]
 []
 ##############################################################################################

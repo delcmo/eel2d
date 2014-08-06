@@ -13,6 +13,7 @@
 #include "EelPressureBasedVisc.h"
 #include "EelFannoFlow.h"
 #include "LowMachPreconditioner.h"
+#include "MassMatrix.h"
 // Auxkernels
 #include "AreaAux.h"
 #include "PressureAux.h"
@@ -91,6 +92,8 @@ namespace Eel2d
       registerKernel(EelPressureBasedVisc);
       registerKernel(EelFannoFlow);
       registerKernel(LowMachPreconditioner);
+      registerKernel(MassMatrix);
+      
       // Auxkernels
       registerAux(AreaAux);
       registerAux(PressureAux);

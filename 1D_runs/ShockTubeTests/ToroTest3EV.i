@@ -12,7 +12,7 @@ diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
 Cjump = 5.
-#isLowMachShock = true
+isShock = true
 
 ###### Initial Conditions #######
 pressure_init_left = 1000.
@@ -22,7 +22,17 @@ vel_init_right = 0.
 temp_init_left = 1000.
 temp_init_right = 0.01
 membrane = 0.5
-length = 0.
+length = 1.e-3
+[]
+
+###### Mesh #######
+[Mesh]
+type = GeneratedMesh
+dim = 1
+nx = 500
+xmin = 0
+xmax = 1
+block_id = '0'
 []
 
 ##############################################################################################
@@ -83,16 +93,6 @@ length = 0.
     execute_on = timestep_begin
   [../]
 
-[]
-
-###### Mesh #######
-[Mesh]
-  type = GeneratedMesh
-  dim = 1
-  nx = 500
-  xmin = 0
-  xmax = 1
-  block_id = '0'
 []
 
 #############################################################################
@@ -398,11 +398,10 @@ length = 0.
     pressure = pressure_aux
     density = density_aux
     norm_velocity = norm_vel_aux
-    jump_grad_press = jump_grad_press_aux
-    jump_grad_dens = jump_grad_dens_aux
+    jump_grad_press = jump_grad_press_smooth_aux # jump_grad_press_aux
+    jump_grad_dens = jump_grad_dens_smooth_aux # jump_grad_dens_aux
     eos = eos
     rhov2_PPS_name = AverageRhovel2
-    rhoc2_PPS_name = AverageRhoc2
   [../]
 
 []
@@ -424,16 +423,16 @@ length = 0.
     area = area_aux
 [../]
 
-[./AverageRhoc2]
-    type = ElementAverageMultipleValues
-    variable = norm_vel_aux
-    output_type = RHOC2
-    rhoA = rhoA
-    rhouA_x = rhouA
-    rhoEA = rhoEA
-    eos = eos
-    area = area_aux
-[../]
+#[./AverageRhoc2]
+#    type = ElementAverageMultipleValues
+#    variable = norm_vel_aux
+#    output_type = RHOC2
+#    rhoA = rhoA
+#    rhouA_x = rhouA
+#    rhoEA = rhoEA
+#    eos = eos
+#    area = area_aux
+#[../]
 []
 
 ##############################################################################################
@@ -500,7 +499,6 @@ length = 0.
     full = true
     solve_type = 'PJFNK'
     line_search = 'default'
-#petsc_options = '-snes_mf_operator'
     petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
     petsc_options_value = '1.e-12       ds             ds'
   [../]
@@ -535,14 +533,14 @@ length = 0.
     time_dt = '1.e-5  1.e-5  1.e-5'
   [../]
   #dtmax = 1e-5
-  l_tol = 1e-10
-  nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-6
+  l_tol = 1e-8
+  nl_rel_tol = 1e-10
+  nl_abs_tol = 1e-7
   l_max_its = 30
   nl_max_its = 10
   [./Quadrature]
     type = TRAP
-    order = THIRD
+    order = SECOND
   [../]
 []
 ##############################################################################################

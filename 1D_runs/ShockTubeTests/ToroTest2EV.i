@@ -11,8 +11,8 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
-Cjump = 5.
-isLowMachShock = false
+Cjump = 1.
+isShock = true
 
 ###### Initial Conditions #######
 pressure_init_left = 0.4
@@ -32,11 +32,6 @@ length = 0.
 ##############################################################################################
 
 [Functions]
-#  [./Hw_fn]
-#    type = ParsedFunction
-#    value = 0.
-#  [../]
-
   [./area]
     type = ParsedFunction
     value = 1.
@@ -93,7 +88,7 @@ length = 0.
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 400
+  nx = 500
   xmin = 0
   xmax = 1
   block_id = '0'
@@ -497,8 +492,8 @@ length = 0.
 ##############################################################################################
 
 [Preconditioning]
-#active = 'FDP_Newton'
-  active = 'SMP_Newton'
+active = 'FDP_Newton'
+#  active = 'SMP_Newton'
   [./FDP_Newton]
     type = FDP
     full = true
@@ -530,8 +525,8 @@ length = 0.
 ##############################################################################################
 
 [Executioner]
-  type = Transient   # Here we use the Transient Executioner
-  string scheme = 'bdf2'
+  type = Transient
+  scheme = 'bdf2'
   #num_steps = 400
   end_time = 0.15
   dt = 1e-4
@@ -542,14 +537,14 @@ length = 0.
   [../]
   dtmin = 1e-9
   #dtmax = 1e-5
-  l_tol = 1e-8
-  nl_rel_tol = 1e-6
-  nl_abs_tol = 1e-5
+  l_tol = 1e-5
+  nl_rel_tol = 1e-10
+  nl_abs_tol = 1e-7
   l_max_its = 50
   nl_max_its = 10
   [./Quadrature]
     type = GAUSS
-    order = SECOND
+#    order = SECOND
   [../]
 []
 ##############################################################################################

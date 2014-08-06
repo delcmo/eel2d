@@ -12,7 +12,7 @@ diffusion_name = ENTROPY
 isJumpOn = true
 Ce = 1.
 Cjump = 5.
-isLowMachShock = false
+isShock = true
 
 ###### Initial Conditions #######
 pressure_init_left = 1000.
@@ -491,13 +491,13 @@ length = 0.
 ##############################################################################################
 
 [Preconditioning]
-#active = 'FDP_Newton'
-    active = 'SMP_Newton'
+ active = 'FDP_Newton'
+#    active = 'SMP_Newton'
   [./FDP_Newton]
     type = FDP
     full = true
     solve_type = 'PJFNK'
-    petsc_options = '-snes_mf_operator -snes_ksp_ew'
+#    petsc_options = '-snes_mf_operator -snes_ksp_ew'
     petsc_options_iname = '-mat_fd_coloring_err  -mat_fd_type  -mat_mffd_type'
     petsc_options_value = '1.e-12       ds             ds'
   [../]
@@ -520,8 +520,8 @@ length = 0.
 ##############################################################################################
 
 [Executioner]
-  type = Transient   # Here we use the Transient Executioner
-  string scheme = 'bdf2'
+  type = Transient
+  scheme = 'bdf2'
   #num_steps = 400
   end_time = 0.012
   #dt = 5e-6
@@ -539,6 +539,7 @@ length = 0.
   nl_max_its = 30
   [./Quadrature]
     type = TRAP
+    order = SECOND
   [../]
 []
 ##############################################################################################

@@ -17,7 +17,7 @@ viscosity_name = ENTROPY
 diffusion_name = ENTROPY
 isJumpOn = false
 Ce = 1.
-Cjump = 4. # 2.7
+Cjump = 5. # 2.7
 
 ###### Initial Conditions #######
 pressure_init_left = 1.e6
@@ -63,7 +63,7 @@ length = 1.
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 500
+  nx = 1600
   xmin = 0
   xmax = 1
   block_id = '0'
@@ -565,7 +565,7 @@ length = 1.
   type = Transient   # Here we use the Transient Executioner
   scheme = 'bdf2'
   #num_steps = 40
-  end_time = 2.6e-2
+  end_time = 3.e-2
   #dt = 5e-5
   [./TimeStepper]
     type = FunctionDT
