@@ -199,7 +199,7 @@ ComputeViscCoeff::computeQpProperties()
 //                norm = 0.5*(std::fabs(1.-Mach)*_rho[_qp]*c*c + Mach*_rho[_qp]*std::min(_norm_vel[_qp]*_norm_vel[_qp], c*c));
                 norm = 0.5 * _rho[_qp] * c * c;
                 kappa_e = _h*_h*(std::fabs(residual) + jump) / norm;
-                kappa_e += _h*_h*std::fabs(vel*_grad_area[_qp])/_area[_qp];
+//                kappa_e += _h*_h*std::fabs(vel*_grad_area[_qp])/_area[_qp];
 
                 // Compute mu_e:
                 if (_isJumpOn)
@@ -211,7 +211,8 @@ ComputeViscCoeff::computeQpProperties()
                     norm = 0.5 * std::max(_rho[_qp]*std::min(_norm_vel[_qp]*_norm_vel[_qp], c*c), (1.-Mach)*rhov2_pps );
                 
                 mu_e = _h*_h*(std::fabs(residual) + jump) / norm;
-                mu_e += _h*_h*std::fabs(vel*_grad_area[_qp])/_area[_qp];
+                kappa_e = mu_e;
+//                mu_e += _h*_h*std::fabs(vel*_grad_area[_qp])/_area[_qp];
 
                 // Compute mu and kappa:
                 _mu[_qp] = std::min( _kappa_max[_qp], mu_e);
