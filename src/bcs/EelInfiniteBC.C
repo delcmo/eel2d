@@ -1,4 +1,5 @@
 #include "EelInfiniteBC.h"
+#include "MooseMesh.h"
 
 template<>
 InputParameters validParams<EelInfiniteBC>()
@@ -16,8 +17,8 @@ InputParameters validParams<EelInfiniteBC>()
   return params;
 }
 
-EelInfiniteBC::EelInfiniteBC(const std::string & name, InputParameters parameters) :
-    IntegratedBC(name, parameters),
+EelInfiniteBC::EelInfiniteBC(const InputParameters & parameters) :
+    IntegratedBC(parameters),
    // Name of the equation:
     _eqn_name(getParam<std::string>("equation_name")),
     _eqn_type("CONTINUITY, XMOMENTUM, YMOMENTUM, ZMOMENTUM, ENERGY, INVALID", "INVALID"),

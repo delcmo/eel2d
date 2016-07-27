@@ -20,7 +20,7 @@ class EelStagnationPandTBC : public IntegratedBC
 {
 
 public:
-  EelStagnationPandTBC(const std::string & name, InputParameters parameters);
+  EelStagnationPandTBC(const InputParameters & parameters);
 
   virtual ~EelStagnationPandTBC(){}
 
@@ -43,16 +43,16 @@ protected:
     // which equation (mass/momentum/energy) this BC is acting on
     MooseEnum _eqn_type;
 
-    // Coupled variables
-    VariableValue & _rhoA;
-    VariableValue & _rhouA_x;
-    VariableValue & _rhouA_y;
-    VariableValue & _rhoEA;
+    // Coupled const Variables
+    const VariableValue & _rhoA;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhouA_y;
+    const VariableValue & _rhoEA;
     
-    // Coupled aux variables:
-    VariableValue & _area;
+    // Coupled aux const Variables:
+    const VariableValue & _area;
 
-    // Specified stagnation variables:
+    // Specified stagnation const Variables:
     Real _p0_bc;
     Real _T0_bc;
     Real _gamma0_bc;

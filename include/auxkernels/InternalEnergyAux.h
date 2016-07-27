@@ -26,18 +26,18 @@ class InternalEnergyAux : public AuxKernel
 {
 public:
 
-  InternalEnergyAux(const std::string & name, InputParameters parameters);
+  InternalEnergyAux(const InputParameters & parameters);
 
 protected:
   virtual Real computeValue();
 
   bool _implicit;
-  VariableValue & _rhoA;
-  VariableValue & _rhouA_x;
-  VariableValue & _rhouA_y;
-  VariableValue & _rhouA_z;
-  VariableValue & _rhoEA;
-VariableValue & _area;
+  const VariableValue & _rhoA;
+  const VariableValue & _rhouA_x;
+  const VariableValue & _rhouA_y;
+  const VariableValue & _rhouA_z;
+  const VariableValue & _rhoEA;
+const VariableValue & _area;
 };
 
 #endif //INTERNALENERGYAUX_H

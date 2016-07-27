@@ -32,7 +32,7 @@ InputParameters validParams<ElementMaxGradient>();
 class ElementMaxGradient : public ElementPostprocessor
 {
 public:
-  ElementMaxGradient(const std::string & name, InputParameters parameters);
+  ElementMaxGradient(const InputParameters & parameters);
 
   virtual void initialize();
   virtual void execute();
@@ -42,7 +42,7 @@ public:
 
 protected:
     // Aux variable
-    VariableGradient & _grad_press;
+    const VariableGradient & _grad_press;
     // Variable:
     Real _value;
 };

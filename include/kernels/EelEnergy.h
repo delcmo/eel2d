@@ -13,7 +13,7 @@
 /****************************************************************/
 
 #ifndef EELENERGY_H
-#define EElENERGY_H
+#define EELENERGY_H
 
 #include "Kernel.h"
 #include "EquationOfState.h"
@@ -29,8 +29,7 @@ class EelEnergy : public Kernel
 {
 public:
 
-  EelEnergy(const std::string & name,
-             InputParameters parameters);
+  EelEnergy(const InputParameters & parameters);
 
 protected:
 
@@ -42,12 +41,12 @@ protected:
 
 private:
     // Coupled variables
-    VariableValue & _rhoA;
-    VariableValue & _rhouA_x;
-    VariableValue & _rhouA_y;
-    VariableValue & _rhouA_z;
-    VariableValue & _pressure;
-    VariableValue & _area;
+    const VariableValue & _rhoA;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhouA_y;
+    const VariableValue & _rhouA_z;
+    const VariableValue & _pressure;
+    const VariableValue & _area;
     
     // Component:
     std::string _Hw_fn_name;

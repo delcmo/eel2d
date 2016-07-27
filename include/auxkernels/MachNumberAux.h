@@ -36,17 +36,17 @@ public:
    * Factory constructor, takes parameters so that all derived classes can be built using the same
    * constructor.
    */
-  MachNumberAux(const std::string & name, InputParameters parameters);
+  MachNumberAux(const InputParameters & parameters);
 
 protected:
   virtual Real computeValue();
 
-    VariableValue & _rhoA;
-    VariableValue & _rhouA_x;
-    VariableValue & _rhouA_y;
-    VariableValue & _rhouA_z;
-    VariableValue & _pressure;
-    VariableValue & _area;
+    const VariableValue & _rhoA;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhouA_y;
+    const VariableValue & _rhouA_z;
+    const VariableValue & _pressure;
+    const VariableValue & _area;
     const EquationOfState & _eos;
 };
 

@@ -13,6 +13,7 @@
 /****************************************************************/
 
 #include "ElementMaxGradient.h"
+#include "libmesh/quadrature.h"
 
 template<>
 InputParameters validParams<ElementMaxGradient>()
@@ -23,8 +24,8 @@ InputParameters validParams<ElementMaxGradient>()
   return params;
 }
 
-ElementMaxGradient::ElementMaxGradient(const std::string & name, InputParameters parameters) :
-    ElementPostprocessor(name, parameters),
+ElementMaxGradient::ElementMaxGradient(const InputParameters & parameters) :
+    ElementPostprocessor(parameters),
     _grad_press(coupledGradient("pressure")),
     _value(-std::numeric_limits<Real>::max())
 {}

@@ -13,6 +13,7 @@
 /****************************************************************/
 
 #include "JumpGradientInterface.h"
+#include "MooseMesh.h"
 
 /* This function is called to compute the jump of the gradient of a given quantity when using CONTINUOUS finite element. This function acts on the sides of the cell.*/
 template<>
@@ -24,8 +25,8 @@ InputParameters validParams<JumpGradientInterface>()
   return params;
 }
 
-JumpGradientInterface::JumpGradientInterface(const std::string & name, InputParameters parameters) :
-    InternalSideUserObject(name, parameters),
+JumpGradientInterface::JumpGradientInterface(const InputParameters & parameters) :
+    InternalSideUserObject(parameters),
     _aux(_fe_problem.getAuxiliarySystem()),
     _grad_u(coupledGradient("variable")),
     _grad_u_neighbor(coupledNeighborGradient("variable")),

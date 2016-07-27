@@ -20,7 +20,7 @@ class EelFluxBC : public IntegratedBC
 {
 
 public:
-  EelFluxBC(const std::string & name, InputParameters parameters);
+  EelFluxBC(const InputParameters & parameters);
 
   virtual ~EelFluxBC(){}
 
@@ -43,24 +43,24 @@ protected:
     // which equation (mass/momentum/energy) this BC is acting on
     MooseEnum _eqn_type;
 
-    // Coupled variables
-    VariableValue & _rhoA;
-    VariableValue & _rhouA_x;
-    VariableValue & _rhouA_y;
-    VariableValue & _rhoEA;
+    // Coupled const Variables
+    const VariableValue & _rhoA;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhouA_y;
+    const VariableValue & _rhoEA;
     
     // Gradient of coupled varibles:
-    VariableGradient & _grad_rhoA;
-    VariableGradient & _grad_rhouA;
-    VariableGradient & _grad_rhovA;
-    VariableGradient & _grad_rhoEA;
+    const VariableGradient & _grad_rhoA;
+    const VariableGradient & _grad_rhouA;
+    const VariableGradient & _grad_rhovA;
+    const VariableGradient & _grad_rhoEA;
     
-    // Coupled aux variables:
-    VariableValue & _area;
+    // Coupled aux const Variables:
+    const VariableValue & _area;
     
     // Material property
-    MaterialProperty<Real> & _kappa;
-    MaterialProperty<Real> & _mu;
+    const MaterialProperty<Real> & _kappa;
+    const MaterialProperty<Real> & _mu;
 
     // Equation of state:
     const EquationOfState & _eos;

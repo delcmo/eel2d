@@ -21,9 +21,8 @@ InputParameters validParams<EelTimeDerivative>()
   return params;
 }
 
-EelTimeDerivative::EelTimeDerivative(const std::string & name,
-                                             InputParameters parameters) :
-    TimeDerivative(name,parameters)
+EelTimeDerivative::EelTimeDerivative(const InputParameters & parameters) :
+    TimeDerivative(parameters)
 {}
 
 Real

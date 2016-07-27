@@ -27,8 +27,7 @@ class EelTimeDerivative : public TimeDerivative
 {
 public:
 
-  EelTimeDerivative(const std::string & name,
-                        InputParameters parameters);
+  EelTimeDerivative(const InputParameters & parameters);
 
 protected:
     virtual Real computeQpResidual();

@@ -13,7 +13,7 @@
 /****************************************************************/
 
 #ifndef EELMASS_H
-#define EELMAS_H
+#define EELMASS_H
 
 #include "Kernel.h"
 
@@ -25,8 +25,7 @@ class EelMass : public Kernel
 {
 public:
 
-  EelMass(const std::string & name,
-             InputParameters parameters);
+  EelMass(const InputParameters & parameters);
 
 protected:
  
@@ -38,9 +37,9 @@ protected:
 
 private:
     // Coupled variables:
-    VariableValue & _rhouA_x;
-    VariableValue & _rhouA_y;
-    VariableValue & _rhouA_z;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhouA_y;
+    const VariableValue & _rhouA_z;
     
     // Parameters for jacobian:
     unsigned int _rhouA_x_nb;

@@ -28,7 +28,7 @@ InputParameters validParams<SmoothFunction>();
 class SmoothFunction : public InternalSideUserObject
 {
 public:
-  SmoothFunction(const std::string & name, InputParameters parameters);
+  SmoothFunction(const InputParameters & parameters);
   virtual ~SmoothFunction();
 
   virtual void initialize();
@@ -40,14 +40,14 @@ public:
   Real getValue() const { return _value; }
 
 protected:
-    // Auxiliary system variable:
+    // Auxiliary system const Variable:
     AuxiliarySystem & _aux;
     // Gradient value:
-    VariableValue & _u;
-    VariableValue & _u_neighbor;
-    // Name of the variable storing the jump:
+    const VariableValue & _u;
+    const VariableValue & _u_neighbor;
+    // Name of the const Variable storing the jump:
     std::string _var_name;
-    // Temporary variable:
+    // Temporary const Variable:
     Real _value;
 };
 

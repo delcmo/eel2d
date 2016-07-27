@@ -13,6 +13,8 @@
 /****************************************************************/
 
 #include "EelArtificialVisc.h"
+#include "MooseMesh.h"
+
 /**
 This function computes the dissipative terms for all of the equations. It is dimension agnostic.
  */
@@ -34,9 +36,8 @@ InputParameters validParams<EelArtificialVisc>()
   return params;
 }
 
-EelArtificialVisc::EelArtificialVisc(const std::string & name,
-                       InputParameters parameters) :
-  Kernel(name, parameters),
+EelArtificialVisc::EelArtificialVisc(const InputParameters & parameters) :
+  Kernel(parameters),
     // Declare equation types
     _equ_name(getParam<std::string>("equation_name")),
     _diff_name(getParam<std::string>("diffusion_name")),

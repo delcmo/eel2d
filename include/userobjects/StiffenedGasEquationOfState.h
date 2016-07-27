@@ -13,7 +13,7 @@ class StiffenedGasEquationOfState : public EquationOfState
 {
 public:
   // Constructor
-  StiffenedGasEquationOfState(const std::string & name, InputParameters parameters);
+  StiffenedGasEquationOfState(const InputParameters & parameters);
 
   // Destructor  
   virtual ~StiffenedGasEquationOfState(); 

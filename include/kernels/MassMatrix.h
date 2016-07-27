@@ -27,8 +27,7 @@ class MassMatrix : public TimeDerivative
 {
 public:
 
-  MassMatrix(const std::string & name,
-                        InputParameters parameters);
+  MassMatrix(const InputParameters & parameters);
 
 protected:
     virtual Real computeQpResidual();

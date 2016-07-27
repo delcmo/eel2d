@@ -1,4 +1,5 @@
 #include "ComputeViscCoeff.h"
+#include "MooseMesh.h"
 
 template<>
 InputParameters validParams<ComputeViscCoeff>()
@@ -38,8 +39,8 @@ InputParameters validParams<ComputeViscCoeff>()
     return params;
 }
 
-ComputeViscCoeff::ComputeViscCoeff(const std::string & name, InputParameters parameters) :
-    Material(name, parameters),
+ComputeViscCoeff::ComputeViscCoeff(const InputParameters & parameters) :
+    Material(parameters),
     // Declare viscosity types
     _visc_name(getParam<std::string>("viscosity_name")),
     _visc_type("LAPIDUS, FIRST_ORDER, FIRST_ORDER_MACH, ENTROPY, PRESSURE_BASED, INVALID", _visc_name),

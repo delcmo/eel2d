@@ -25,7 +25,7 @@ InputParameters validParams<EntropyViscMarker>();
 class EntropyViscMarker : public IndicatorMarker
 {
 public:
-  EntropyViscMarker(const std::string & name, InputParameters parameters);
+  EntropyViscMarker(const InputParameters & parameters);
   virtual ~EntropyViscMarker(){};
 
   virtual void markerSetup();

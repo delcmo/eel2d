@@ -24,8 +24,8 @@ InputParameters validParams<EntropyViscMarker>()
 }
 
 
-EntropyViscMarker::EntropyViscMarker(const std::string & name, InputParameters parameters) :
-    IndicatorMarker(name, parameters),
+EntropyViscMarker::EntropyViscMarker(const InputParameters & parameters) :
+    IndicatorMarker(parameters),
     _coarsen(parameters.get<Real>("coarsen")),
     _refine(parameters.get<Real>("refine"))
 {
@@ -38,25 +38,25 @@ EntropyViscMarker::EntropyViscMarker(const std::string & name, InputParameters p
 void
 EntropyViscMarker::markerSetup()
 {
-  _min = std::numeric_limits<Real>::max();
-  _max = 0;
-
-  // First find the max and min error
-  for(unsigned int i=0; i<_error_vector.size(); i++)
-  {
-    _min = std::min(_min, static_cast<Real>(_error_vector[i]));
-    _max = std::max(_max, static_cast<Real>(_error_vector[i]));
-  }
-
-  _delta = _max-_min;
-  _refine_cutoff = (1.0-_refine)*_max;
-  _coarsen_cutoff = _coarsen*_delta + _min;
+//  _min = std::numeric_limits<Real>::max();
+//  _max = 0;
+//
+//  // First find the max and min error
+//  for(unsigned int i=0; i<_error_vector.size(); i++)
+//  {
+//    _min = std::min(_min, static_cast<Real>(_error_vector[i]));
+//    _max = std::max(_max, static_cast<Real>(_error_vector[i]));
+//  }
+//
+//  _delta = _max-_min;
+//  _refine_cutoff = (1.0-_refine)*_max;
+//  _coarsen_cutoff = _coarsen*_delta + _min;
 }
 
 Marker::MarkerValue
 EntropyViscMarker::computeElementMarker()
 {
-  Real error = _error_vector[_current_elem->id()];
+  Real error = 0.; // _error_vector[_current_elem->id()];
 
   if(error > _refine_cutoff)
     return REFINE;

@@ -1,5 +1,4 @@
-#include "Eel2d.h"
-//Moose Includes
+#include "Eel2dApp.h"
 #include "MooseInit.h"
 #include "Moose.h"
 #include "MooseApp.h"
@@ -15,7 +14,7 @@ int main(int argc, char *argv[])
   MooseInit init(argc, argv);
 
   // Register this application's MooseApp and any it depends on
-  Eel2d::registerApps();
+  Eel2dApp::registerApps();
 
   // This creates dynamic memory that we're responsible for deleting
   MooseApp * app = AppFactory::createApp("Eel2dApp", argc, argv);

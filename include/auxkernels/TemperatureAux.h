@@ -29,13 +29,13 @@ class TemperatureAux : public AuxKernel
 {
 public:
 
-  TemperatureAux(const std::string & name, InputParameters parameters);
+  TemperatureAux(const InputParameters & parameters);
 
 protected:
   virtual Real computeValue();
 
-    VariableValue & _pressure;
-    VariableValue & _rho;
+    const VariableValue & _pressure;
+    const VariableValue & _rho;
     const EquationOfState & _eos;
 };
 

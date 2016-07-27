@@ -23,9 +23,9 @@ InputParameters validParams<ElementL1Error>()
   return params;
 }
 
-ElementL1Error::ElementL1Error(const std::string & name, InputParameters parameters) :
-    ElementIntegralVariablePostprocessor(name, parameters),
-    FunctionInterface(parameters),
+ElementL1Error::ElementL1Error(const InputParameters & parameters) :
+    ElementIntegralVariablePostprocessor(parameters),
+//    FunctionInterface(parameters),
     _func(getFunction("function"))
 {
 }

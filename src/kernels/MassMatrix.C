@@ -21,9 +21,8 @@ InputParameters validParams<MassMatrix>()
   return params;
 }
 
-MassMatrix::MassMatrix(const std::string & name,
-                                             InputParameters parameters) :
-    TimeDerivative(name,parameters)
+MassMatrix::MassMatrix(const InputParameters & parameters) :
+    TimeDerivative(parameters)
 {}
 
 Real

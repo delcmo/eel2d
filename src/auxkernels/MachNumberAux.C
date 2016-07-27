@@ -15,6 +15,7 @@
 This function compute the Mach number. It is dimension agnostic.
 **/
 #include "MachNumberAux.h"
+#include "MooseMesh.h"
 
 template<>
 InputParameters validParams<MachNumberAux>()
@@ -32,8 +33,8 @@ InputParameters validParams<MachNumberAux>()
   return params;
 }
 
-MachNumberAux::MachNumberAux(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
+MachNumberAux::MachNumberAux(const InputParameters & parameters) :
+    AuxKernel(parameters),
     // Coupled variables
     _rhoA(coupledValue("rhoA")),
     _rhouA_x(coupledValue("rhouA_x")),

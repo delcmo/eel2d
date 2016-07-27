@@ -18,7 +18,7 @@ InputParameters validParams<NodalMassConservationPPS>();
 class NodalMassConservationPPS : public NodalPostprocessor
 {
 public:
-  NodalMassConservationPPS(const std::string & name, InputParameters parameters);
+  NodalMassConservationPPS(const InputParameters & parameters);
   virtual ~NodalMassConservationPPS();
 
   virtual void initialize();
@@ -29,13 +29,13 @@ public:
 protected:
   Real _value;
   /// Components of nodal normals
-  VariableValue & _nx;
-  VariableValue & _ny;
-  VariableValue & _nz;
+  const VariableValue & _nx;
+  const VariableValue & _ny;
+  const VariableValue & _nz;
   /// Components of momentum vector
-  VariableValue & _rho_u;
-  VariableValue & _rho_v;
-  VariableValue & _rho_w;
+  const VariableValue & _rho_u;
+  const VariableValue & _rho_v;
+  const VariableValue & _rho_w;
 };
 
 #endif /* NODALMASSCONSERVATIONPPS_H */

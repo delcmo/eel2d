@@ -21,8 +21,8 @@ InputParameters validParams<ElementAverageMultipleValues>()
   return params;
 }
 
-ElementAverageMultipleValues::ElementAverageMultipleValues(const std::string & name, InputParameters parameters) :
-    ElementIntegralMultipleVariablesPostprocessor(name, parameters),
+ElementAverageMultipleValues::ElementAverageMultipleValues(const InputParameters & parameters) :
+    ElementIntegralMultipleVariablesPostprocessor(parameters),
     _volume(0)
 {}
 

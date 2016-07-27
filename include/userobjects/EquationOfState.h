@@ -13,7 +13,7 @@ class EquationOfState : public GeneralUserObject
 {
 public:
   // Constructor
-  EquationOfState(const std::string & name, InputParameters parameters);
+  EquationOfState(const InputParameters & parameters);
 
   // Destructor  
   virtual ~EquationOfState(); 

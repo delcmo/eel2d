@@ -1,5 +1,7 @@
 #include "InviscidTimeStepLimit.h"
 #include "EquationOfState.h"
+#include "MooseMesh.h"
+#include "libmesh/quadrature.h"
 
 template<>
 InputParameters validParams<InviscidTimeStepLimit>()
@@ -13,8 +15,8 @@ InputParameters validParams<InviscidTimeStepLimit>()
   return params;
 }
 
-InviscidTimeStepLimit::InviscidTimeStepLimit(const std::string & name, InputParameters parameters) :
-    ElementPostprocessor(name, parameters),
+InviscidTimeStepLimit::InviscidTimeStepLimit(const InputParameters & parameters) :
+    ElementPostprocessor(parameters),
     _dim(_mesh.dimension()),
     _vel_mag(coupledValue("vel_mag")),
     _c(coupledValue("c")),

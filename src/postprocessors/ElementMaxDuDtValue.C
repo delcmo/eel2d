@@ -13,6 +13,7 @@
 /****************************************************************/
 
 #include "ElementMaxDuDtValue.h"
+#include "libmesh/quadrature.h"
 
 template<>
 InputParameters validParams<ElementMaxDuDtValue>()
@@ -24,8 +25,8 @@ InputParameters validParams<ElementMaxDuDtValue>()
   return params;
 }
 
-ElementMaxDuDtValue::ElementMaxDuDtValue(const std::string & name, InputParameters parameters) :
-    ElementPostprocessor(name, parameters),
+ElementMaxDuDtValue::ElementMaxDuDtValue(const InputParameters & parameters) :
+    ElementPostprocessor(parameters),
     _var(coupledValue("variable")),
     _var_old(coupledValueOld("variable")),
     _var2(isCoupled("variable2") ? coupledValue("variable2") : _zero),

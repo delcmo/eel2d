@@ -26,13 +26,13 @@ class VariableTimesAreaAux : public AuxKernel
 {
 public:
 
-  VariableTimesAreaAux(const std::string & name, InputParameters parameters);
+  VariableTimesAreaAux(const InputParameters & parameters);
 
 protected:
   virtual Real computeValue();
 
-    VariableValue & _var;
-    VariableValue & _area;
+    const VariableValue & _var;
+    const VariableValue & _area;
 };
 
 #endif //VariableTimesAreaAUX_H

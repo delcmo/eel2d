@@ -13,6 +13,8 @@
 /****************************************************************/
 
 #include "EelMomentum.h"
+#include "MooseMesh.h"
+
 /**
 This function computes the x, y and z momentum equationS. It is dimension agnostic. 
  */
@@ -35,9 +37,8 @@ InputParameters validParams<EelMomentum>()
   return params;
 }
 
-EelMomentum::EelMomentum(const std::string & name,
-                       InputParameters parameters) :
-  Kernel(name, parameters),
+EelMomentum::EelMomentum(const InputParameters & parameters) :
+  Kernel(parameters),
     // Coupled auxilary variables
     _rhouA_x(coupledValue("rhouA_x")),
     _rhouA_y(_mesh.dimension()>=2 ? coupledValue("rhouA_y") : _zero),

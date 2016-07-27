@@ -27,8 +27,7 @@ class EelCMethod : public Kernel
 {
 public:
 
-  EelCMethod(const std::string & name,
-             InputParameters parameters);
+  EelCMethod(const InputParameters & parameters);
 
 protected:
 
@@ -40,7 +39,7 @@ protected:
 
 private:
     /// Coupled aux variables:
-    VariableGradient & _grad_press;
+    const VariableGradient & _grad_press;
     // Parameter for diffusion term:
     double _kappa;
     // Name of pps computing max(eigenvalues):

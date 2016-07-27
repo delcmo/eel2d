@@ -36,9 +36,8 @@ InputParameters validParams<DoubleMachReflectionIC>()
     return params;
 }
 
-DoubleMachReflectionIC::DoubleMachReflectionIC(const std::string & name,
-                     InputParameters parameters) :
-    InitialCondition(name, parameters),
+DoubleMachReflectionIC::DoubleMachReflectionIC(const InputParameters & parameters) :
+    InitialCondition(parameters),
     // Function
     _area(getFunction("area")),
 	// IC parameters

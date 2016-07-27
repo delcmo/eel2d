@@ -32,7 +32,7 @@ InputParameters validParams<ElementMaxDuDtValue>();
 class ElementMaxDuDtValue : public ElementPostprocessor
 {
 public:
-  ElementMaxDuDtValue(const std::string & name, InputParameters parameters);
+  ElementMaxDuDtValue(const InputParameters & parameters);
 
   virtual void initialize();
   virtual void execute();
@@ -42,10 +42,10 @@ public:
 
 protected:
     // Aux variable
-    VariableValue & _var;
-    VariableValue & _var_old;
+    const VariableValue & _var;
+    const VariableValue & _var_old;
     // Second aux variable
-    VariableValue & _var2;
+    const VariableValue & _var2;
     // Variable:
     Real _value;
 };

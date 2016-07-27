@@ -24,8 +24,8 @@ InputParameters validParams<EelStagnationPandTBC>()
   return params;
 }
 
-EelStagnationPandTBC::EelStagnationPandTBC(const std::string & name, InputParameters parameters) :
-    IntegratedBC(name, parameters),
+EelStagnationPandTBC::EelStagnationPandTBC(const InputParameters & parameters) :
+    IntegratedBC(parameters),
     // Type of equation:
     _eqn_name(getParam<std::string>("equation_name")),
     _eqn_type("VOIDFRACTION, CONTINUITY, XMOMENTUM, YMOMENTUM, ZMOMENTUM, ENERGY, INVALID", _eqn_name),

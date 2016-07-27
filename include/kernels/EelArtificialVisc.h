@@ -27,8 +27,7 @@ class EelArtificialVisc : public Kernel
 {
 public:
 
-  EelArtificialVisc(const std::string & name,
-             InputParameters parameters);
+  EelArtificialVisc(const InputParameters & parameters);
 
 protected:
 
@@ -62,21 +61,21 @@ private:
     MooseEnum _equ_type;
     MooseEnum _diff_type;
     // Coupled aux variables:
-    VariableValue & _rho;
-    VariableGradient & _grad_rho;
-    VariableValue & _vel_x;
-    VariableValue & _vel_y;
-    VariableValue & _vel_z;
-    VariableGradient & _grad_vel_x;
-    VariableGradient & _grad_vel_y;
-    VariableGradient & _grad_vel_z;
-    VariableGradient & _grad_rhoe;
-    VariableValue & _area;
-    VariableValue & _norm_vel;
-    VariableGradient & _grad_norm_vel;
+    const VariableValue & _rho;
+    const VariableGradient & _grad_rho;
+    const VariableValue & _vel_x;
+    const VariableValue & _vel_y;
+    const VariableValue & _vel_z;
+    const VariableGradient & _grad_vel_x;
+    const VariableGradient & _grad_vel_y;
+    const VariableGradient & _grad_vel_z;
+    const VariableGradient & _grad_rhoe;
+    const VariableValue & _area;
+    const VariableValue & _norm_vel;
+    const VariableGradient & _grad_norm_vel;
     // Material property: viscosity coefficient.
-    MaterialProperty<Real> & _mu;
-    MaterialProperty<Real> & _kappa;
+    const MaterialProperty<Real> & _mu;
+    const MaterialProperty<Real> & _kappa;
 };
 
 #endif // EELARTIFICIALVISC_H

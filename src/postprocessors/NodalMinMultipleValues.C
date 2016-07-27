@@ -13,6 +13,7 @@
 /****************************************************************/
 
 #include "NodalMinMultipleValues.h"
+#include "MooseMesh.h"
 
 #include <algorithm>
 #include <limits>
@@ -37,8 +38,8 @@ InputParameters validParams<NodalMinMultipleValues>()
   return params;
 }
 
-NodalMinMultipleValues::NodalMinMultipleValues(const std::string & name, InputParameters parameters) :
-  NodalVariablePostprocessor(name, parameters),
+NodalMinMultipleValues::NodalMinMultipleValues(const InputParameters & parameters) :
+  NodalVariablePostprocessor(parameters),
     _value(-std::numeric_limits<Real>::max()),
     // Function Mach number:
     _output_name(getParam<std::string>("output_type")),

@@ -16,7 +16,7 @@
 #define ELEMENTL1ERROR_H
 
 #include "ElementIntegralVariablePostprocessor.h"
-#include "FunctionInterface.h"
+//#include "FunctionInterface.h"
 
 class Function;
 
@@ -27,11 +27,11 @@ template<>
 InputParameters validParams<ElementL1Error>();
 
 class ElementL1Error :
-  public ElementIntegralVariablePostprocessor,
-  public FunctionInterface
+  public ElementIntegralVariablePostprocessor
+//  public FunctionInterface
 {
 public:
-  ElementL1Error(const std::string & name, InputParameters parameters);
+  ElementL1Error(const InputParameters & parameters);
 
   /**
    * Get the L2 Error.

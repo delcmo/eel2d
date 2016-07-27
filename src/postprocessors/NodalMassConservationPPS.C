@@ -19,8 +19,8 @@ InputParameters validParams<NodalMassConservationPPS>()
   return params;
 }
 
-NodalMassConservationPPS::NodalMassConservationPPS(const std::string & name, InputParameters parameters) :
-    NodalPostprocessor(name, parameters),
+NodalMassConservationPPS::NodalMassConservationPPS(const InputParameters & parameters) :
+    NodalPostprocessor(parameters),
     _value(0.),
     _nx(coupledValue("nx")),
     _ny(coupledValue("ny")),

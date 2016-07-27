@@ -28,8 +28,7 @@ class LowMachPreconditioner : public Kernel
 {
 public:
 
-  LowMachPreconditioner(const std::string & name,
-             InputParameters parameters);
+  LowMachPreconditioner(const InputParameters & parameters);
 
 protected:
 
@@ -41,13 +40,13 @@ protected:
 
 private:
     // Aux variables:
-    VariableValue & _rhoA;
-    VariableValue & _rhouA_x;
-    VariableValue & _rhouA_y;
-    VariableValue & _rhouA_z;
-    VariableValue & _pressure_old;
-    VariableValue & _pressure_older;
-    VariableValue & _area;
+    const VariableValue & _rhoA;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhouA_y;
+    const VariableValue & _rhouA_z;
+    const VariableValue & _pressure_old;
+    const VariableValue & _pressure_older;
+    const VariableValue & _area;
     
     // Equation of state:
     const EquationOfState & _eos;

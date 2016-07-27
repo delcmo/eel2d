@@ -28,7 +28,7 @@ InputParameters validParams<JumpGradientInterface>();
 class JumpGradientInterface : public InternalSideUserObject
 {
 public:
-  JumpGradientInterface(const std::string & name, InputParameters parameters);
+  JumpGradientInterface(const InputParameters & parameters);
   virtual ~JumpGradientInterface();
 
   virtual void initialize();
@@ -40,14 +40,14 @@ public:
   Real getValue() const { return _value; }
 
 protected:
-    // Auxiliary system variable:
+    // Auxiliary system const Variable:
     AuxiliarySystem & _aux;
     // Gradient value:
-    VariableGradient & _grad_u;
-    VariableGradient & _grad_u_neighbor;
-    // Name of the variable storing the jump:
+    const VariableGradient & _grad_u;
+    const VariableGradient & _grad_u_neighbor;
+    // Name of the const Variable storing the jump:
     std::string _jump_name;
-    // Temporary variable:
+    // Temporary const Variable:
     Real _value;
 };
 

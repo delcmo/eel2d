@@ -21,8 +21,8 @@ InputParameters validParams<EelDBC>()
   return params;
 }
 
-EelDBC::EelDBC(const std::string & name, InputParameters parameters) :
-    IntegratedBC(name, parameters)
+EelDBC::EelDBC(const InputParameters & parameters) :
+    IntegratedBC(parameters)
 {}
 
 Real

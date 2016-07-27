@@ -34,7 +34,7 @@ public:
    * Factory constructor, takes parameters so that all derived classes can be built using the same
    * constructor.
    */
-  ScalarDirichletBC(const std::string & name, InputParameters parameters);
+  ScalarDirichletBC(const InputParameters & parameters);
 
 protected:
   virtual Real computeQpResidual();
@@ -42,7 +42,7 @@ protected:
   /**
    * Holds the values of a coupled scalar variable.
    */
-  VariableValue & _scalar_val;
+  const VariableValue & _scalar_val;
 };
 
 #endif // SCALARDIRICHLETBC_H

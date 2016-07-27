@@ -25,8 +25,8 @@ InputParameters validParams<VelocityAux>()
   return params;
 }
 
-VelocityAux::VelocityAux(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
+VelocityAux::VelocityAux(const InputParameters & parameters) :
+    AuxKernel(parameters),
     _rhoA(coupledValue("rhoA")),
     _rhouA(coupledValue("rhouA"))
 {}

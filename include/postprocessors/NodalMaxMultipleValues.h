@@ -29,7 +29,7 @@ InputParameters validParams<NodalMaxMultipleValues>();
 class NodalMaxMultipleValues : public NodalVariablePostprocessor
 {
 public:
-  NodalMaxMultipleValues(const std::string & name, InputParameters parameters);
+  NodalMaxMultipleValues(const InputParameters & parameters);
 
   virtual void initialize();
   virtual void execute();
@@ -48,12 +48,12 @@ protected:
     std::string _output_name;
     MooseEnum _output_type;
     // Conservative variables:
-    VariableValue & _rhoA;
-    VariableValue & _rhouA_x;
-    VariableValue & _rhouA_y;
-    VariableValue & _rhoEA;
+    const VariableValue & _rhoA;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhouA_y;
+    const VariableValue & _rhoEA;
     // Primitive variable:
-    VariableValue & _area;
+    const VariableValue & _area;
     // Equation of state:
     const EquationOfState & _eos;
 };

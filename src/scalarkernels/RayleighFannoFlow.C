@@ -28,9 +28,9 @@ InputParameters validParams<RayleighFannoFlow>()
   return params;
 }
 
-RayleighFannoFlow::RayleighFannoFlow(const std::string & name, InputParameters parameters) :
+RayleighFannoFlow::RayleighFannoFlow(const InputParameters & parameters) :
     // You must call the constructor of the base class first
-    ODEKernel(name, parameters),
+    ODEKernel(parameters),
     _f(getParam<Real>("friction")),
     _Dh(getParam<Real>("Dh")),
     _eos(getUserObject<EquationOfState>("eos"))

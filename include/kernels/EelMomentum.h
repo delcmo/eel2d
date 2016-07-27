@@ -28,8 +28,7 @@ class EelMomentum : public Kernel
 {
 public:
 
-  EelMomentum(const std::string & name,
-             InputParameters parameters);
+  EelMomentum(const InputParameters & parameters);
 
 protected:
 
@@ -41,14 +40,14 @@ protected:
 
 private:
     // Aux variables:
-    VariableValue & _rhouA_x;
-    VariableValue & _rhouA_y;
-    VariableValue & _rhouA_z;
-    VariableValue & _pressure;
-    VariableValue & _rhoA;
-    VariableValue & _rhoEA;
-    VariableValue & _area;
-    VariableGradient & _grad_area;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhouA_y;
+    const VariableValue & _rhouA_z;
+    const VariableValue & _pressure;
+    const VariableValue & _rhoA;
+    const VariableValue & _rhoEA;
+    const VariableValue & _area;
+    const VariableGradient & _grad_area;
     
     // Equation of state:
     const EquationOfState & _eos;

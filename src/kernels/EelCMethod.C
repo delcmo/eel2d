@@ -30,9 +30,8 @@ InputParameters validParams<EelCMethod>()
   return params;
 }
 
-EelCMethod::EelCMethod(const std::string & name,
-                       InputParameters parameters) :
-  Kernel(name, parameters),
+EelCMethod::EelCMethod(const InputParameters & parameters) :
+  Kernel(parameters),
     // Coupled aux variables:
     _grad_press(coupledGradient("pressure")),
     // Parameters for diffution term:

@@ -13,8 +13,8 @@ InputParameters validParams<EquationOfState>()
     return params;
 }
 
-EquationOfState::EquationOfState(const std::string & name, InputParameters parameters) :
-  GeneralUserObject(name, parameters),
+EquationOfState::EquationOfState(const InputParameters & parameters) :
+  GeneralUserObject(parameters),
     _gamma(getParam<Real>("gamma")),
     _Pinf(getParam<Real>("Pinf")),
     _qcoeff(getParam<Real>("q")),

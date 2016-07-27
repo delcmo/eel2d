@@ -13,6 +13,7 @@
 /****************************************************************/
 
 #include "EelMass.h"
+#include "MooseMesh.h"
 
 /**
 This Kernel computes the convection flux of the continuity equation :
@@ -28,9 +29,8 @@ InputParameters validParams<EelMass>()
   return params;
 }
 
-EelMass::EelMass(const std::string & name,
-                       InputParameters parameters) :
-  Kernel(name, parameters),
+EelMass::EelMass(const InputParameters & parameters) :
+  Kernel(parameters),
     // Coupled aux variables
     _rhouA_x(coupledValue("rhouA_x")),
     _rhouA_y(_mesh.dimension()>=2 ? coupledValue("rhouA_y") : _zero ),

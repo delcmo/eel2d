@@ -15,6 +15,7 @@
 This function computes the fluid internal energy 'rhoe' from the conservative variables. It is dimension agnostic.
 **/
 #include "InternalEnergyAux.h"
+#include "MooseMesh.h"
 
 template<>
 InputParameters validParams<InternalEnergyAux>()
@@ -31,8 +32,8 @@ InputParameters validParams<InternalEnergyAux>()
   return params;
 }
 
-InternalEnergyAux::InternalEnergyAux(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
+InternalEnergyAux::InternalEnergyAux(const InputParameters & parameters) :
+    AuxKernel(parameters),
     _rhoA(coupledValue("rhoA")),
     _rhouA_x(coupledValue("rhouA_x")),
     _rhouA_y(_mesh.dimension()>=2 ? coupledValue("rhouA_y") : _zero),

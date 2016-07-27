@@ -26,13 +26,13 @@ class DensityAux : public AuxKernel
 {
 public:
 
-  DensityAux(const std::string & name, InputParameters parameters);
+  DensityAux(const InputParameters & parameters);
 
 protected:
   virtual Real computeValue();
 
-  VariableValue & _rhoA;
-  VariableValue & _area;
+  const VariableValue & _rhoA;
+  const VariableValue & _area;
 };
 
 #endif //DENSITYAUX_H

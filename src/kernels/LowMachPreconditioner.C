@@ -13,6 +13,7 @@
 /****************************************************************/
 
 #include "LowMachPreconditioner.h"
+#include "MooseMesh.h"
 /**
 This function computes the x, y and z momentum equationS. It is dimension agnostic. 
  */
@@ -31,9 +32,8 @@ InputParameters validParams<LowMachPreconditioner>()
   return params;
 }
 
-LowMachPreconditioner::LowMachPreconditioner(const std::string & name,
-                       InputParameters parameters) :
-  Kernel(name, parameters),
+LowMachPreconditioner::LowMachPreconditioner(const InputParameters & parameters) :
+  Kernel(parameters),
     // Coupled auxilary variables
     _rhoA(coupledValue("rhoA")),
     _rhouA_x(coupledValue("rhouA_x")),

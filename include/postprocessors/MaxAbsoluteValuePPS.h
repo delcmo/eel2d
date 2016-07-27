@@ -26,7 +26,7 @@ InputParameters validParams<MaxAbsoluteValuePPS>();
 class MaxAbsoluteValuePPS : public ElementPostprocessor
 {
 public:
-  MaxAbsoluteValuePPS(const std::string & name, InputParameters parameters);
+  MaxAbsoluteValuePPS(const InputParameters & parameters);
 
   virtual void initialize();
   virtual void execute();
@@ -35,8 +35,8 @@ public:
   virtual void threadJoin(const UserObject & y);
 
 protected:
-    // Variable this pps is acting on:
-    VariableValue & _u;
+    // const Variable this pps is acting on:
+    const VariableValue & _u;
     
     // Value storing the max:
     Real _value;

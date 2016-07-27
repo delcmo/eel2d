@@ -24,7 +24,7 @@ template<>
 InputParameters validParams<EelMomentumHRhoUDBC>();
 
 /**
- * Implements a Dirichlet BC where scalar variable is coupled in
+ * Implements a Dirichlet BC where scalar const Variable is coupled in
  */
 class EelMomentumHRhoUDBC : public NodalBC
 {
@@ -34,13 +34,13 @@ public:
    * Factory constructor, takes parameters so that all derived classes can be built using the same
    * constructor.
    */
-  EelMomentumHRhoUDBC(const std::string & name, InputParameters parameters);
+  EelMomentumHRhoUDBC(const InputParameters & parameters);
 
 protected:
   virtual Real computeQpResidual();
 
     Real _rhou;
-    VariableValue & _area;
+    const VariableValue & _area;
 };
 
 #endif // EELMOMENTUMHRHOUDBC_H

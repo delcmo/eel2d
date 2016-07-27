@@ -36,7 +36,7 @@ class ElementIntegralMultipleVariablesPostprocessor :
   public MooseVariableInterface
 {
 public:
-  ElementIntegralMultipleVariablesPostprocessor(const std::string & name, InputParameters parameters);
+  ElementIntegralMultipleVariablesPostprocessor(const InputParameters & parameters);
 
 protected:
   virtual Real computeQpIntegral();
@@ -53,12 +53,12 @@ protected:
     // Variable
     MooseVariable & _var;
     // Conservative variables:
-    VariableValue & _rhoA;
-    VariableValue & _rhouA_x;
-    VariableValue & _rhouA_y;
-    VariableValue & _rhoEA;
+    const VariableValue & _rhoA;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhouA_y;
+    const VariableValue & _rhoEA;
     // Primitive variable:
-    VariableValue & _area;
+    const VariableValue & _area;
     // Equation of state:
     const EquationOfState & _eos;
 };

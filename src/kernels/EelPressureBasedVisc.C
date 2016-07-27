@@ -26,9 +26,8 @@ InputParameters validParams<EelPressureBasedVisc>()
   return params;
 }
 
-EelPressureBasedVisc::EelPressureBasedVisc(const std::string & name,
-                       InputParameters parameters) :
-  Kernel(name, parameters),
+EelPressureBasedVisc::EelPressureBasedVisc(const InputParameters & parameters) :
+  Kernel(parameters),
     // Coupled aux variables
     _grad_press(coupledGradient("pressure"))
 {

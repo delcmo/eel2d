@@ -28,9 +28,8 @@ InputParameters validParams<EelFannoFlow>()
   return params;
 }
 
-EelFannoFlow::EelFannoFlow(const std::string & name,
-                       InputParameters parameters) :
-  Kernel(name, parameters),
+EelFannoFlow::EelFannoFlow(const InputParameters & parameters) :
+  Kernel(parameters),
     _f(getParam<Real>("friction")),
     _Dh(getParam<Real>("Dh")),
     _eos(getUserObject<EquationOfState>("eos"))

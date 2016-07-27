@@ -13,7 +13,7 @@ class EelWallBC : public IntegratedBC
 {
 
 public:
-  EelWallBC(const std::string & name, InputParameters parameters);
+  EelWallBC(const InputParameters & parameters);
 
   virtual ~EelWallBC(){}
 
@@ -36,12 +36,12 @@ protected:
     // which equation (mass/momentum/energy) this BC is acting on
     MooseEnum _eqn_type;
     
-    // Coupled aux variables
-    VariableValue & _rhoA;
-    VariableValue & _rhouA_x;
-    VariableValue & _rhouA_y;
-    VariableValue & _rhoEA;
-    VariableValue & _area;
+    // Coupled aux const Variables
+    const VariableValue & _rhoA;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhouA_y;
+    const VariableValue & _rhoEA;
+    const VariableValue & _area;
     
     // Equation of state for jacobian matrix:
     const EquationOfState & _eos;

@@ -13,6 +13,7 @@
 /****************************************************************/
 
 #include "SmoothFunction.h"
+#include "MooseMesh.h"
 
 /* This function is called to compute the jump of the gradient of a given quantity when using CONTINUOUS finite element. This function acts on the sides of the cell.*/
 template<>
@@ -24,8 +25,8 @@ InputParameters validParams<SmoothFunction>()
   return params;
 }
 
-SmoothFunction::SmoothFunction(const std::string & name, InputParameters parameters) :
-    InternalSideUserObject(name, parameters),
+SmoothFunction::SmoothFunction(const InputParameters & parameters) :
+    InternalSideUserObject(parameters),
     _aux(_fe_problem.getAuxiliarySystem()),
     _u(coupledValue("variable")),
     _u_neighbor(coupledNeighborValue("variable")),

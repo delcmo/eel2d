@@ -28,7 +28,7 @@ InputParameters validParams<RayleighFannoFlow>();
 class RayleighFannoFlow : public ODEKernel
 {
 public: 
-  RayleighFannoFlow(const std::string & name, InputParameters parameters);
+  RayleighFannoFlow(const InputParameters & parameters);
 
 protected:
     

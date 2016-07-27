@@ -26,8 +26,7 @@ class EelFannoFlow : public Kernel
 {
 public:
 
-  EelFannoFlow(const std::string & name,
-             InputParameters parameters);
+  EelFannoFlow(const InputParameters & parameters);
 
 protected:
  

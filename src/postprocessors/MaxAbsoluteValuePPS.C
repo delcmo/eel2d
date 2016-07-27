@@ -13,6 +13,8 @@
 /****************************************************************/
 
 #include "MaxAbsoluteValuePPS.h"
+#include "libmesh/quadrature.h"
+
 /* This pps computes the maximum absolute value at the quadrature points (infinite norm). */
 template<>
 InputParameters validParams<MaxAbsoluteValuePPS>()
@@ -22,8 +24,8 @@ InputParameters validParams<MaxAbsoluteValuePPS>()
   return params;
 }
 
-MaxAbsoluteValuePPS::MaxAbsoluteValuePPS(const std::string & name, InputParameters parameters) :
-    ElementPostprocessor(name, parameters),
+MaxAbsoluteValuePPS::MaxAbsoluteValuePPS(const InputParameters & parameters) :
+    ElementPostprocessor(parameters),
     _u(coupledValue("variable")),
     _value(-std::numeric_limits<Real>::max())
 {}

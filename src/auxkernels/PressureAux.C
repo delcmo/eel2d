@@ -15,6 +15,7 @@
 This function computes the pressure. It is dimension agnostic.
 **/
 #include "PressureAux.h"
+#include "MooseMesh.h"
 
 template<>
 InputParameters validParams<PressureAux>()
@@ -30,8 +31,8 @@ InputParameters validParams<PressureAux>()
   return params;
 }
 
-PressureAux::PressureAux(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
+PressureAux::PressureAux(const InputParameters & parameters) :
+    AuxKernel(parameters),
     // Coupled variables
     _rhoA(coupledValue("rhoA")),
     _rhouA_x(coupledValue("rhouA_x")),

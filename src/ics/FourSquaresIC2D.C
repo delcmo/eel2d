@@ -46,9 +46,8 @@ InputParameters validParams<FourSquaresIC2D>()
     return params;
 }
 
-FourSquaresIC2D::FourSquaresIC2D(const std::string & name,
-                     InputParameters parameters) :
-    InitialCondition(name, parameters),
+FourSquaresIC2D::FourSquaresIC2D(const InputParameters & parameters) :
+    InitialCondition(parameters),
     // Function
     _area(getFunction("area")),
 	// Input parameters:

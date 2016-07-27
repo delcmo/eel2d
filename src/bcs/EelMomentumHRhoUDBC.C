@@ -23,8 +23,8 @@ InputParameters validParams<EelMomentumHRhoUDBC>()
   return params;
 }
 
-EelMomentumHRhoUDBC::EelMomentumHRhoUDBC(const std::string & name, InputParameters parameters) :
-    NodalBC(name, parameters),
+EelMomentumHRhoUDBC::EelMomentumHRhoUDBC(const InputParameters & parameters) :
+    NodalBC(parameters),
     _rhou(getParam<Real>("rhou")),
     _area(coupledValue("area"))
 {}

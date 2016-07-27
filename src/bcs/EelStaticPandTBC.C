@@ -1,4 +1,5 @@
 #include "EelStaticPandTBC.h"
+#include "MooseMesh.h"
 
 template<>
 InputParameters validParams<EelStaticPandTBC>()
@@ -21,8 +22,8 @@ InputParameters validParams<EelStaticPandTBC>()
   return params;
 }
 
-EelStaticPandTBC::EelStaticPandTBC(const std::string & name, InputParameters parameters) :
-    IntegratedBC(name, parameters),
+EelStaticPandTBC::EelStaticPandTBC(const InputParameters & parameters) :
+    IntegratedBC(parameters),
     // Name of the equation:
     _eqn_name(getParam<std::string>("equation_name")),
     _eqn_type("CONTINUITY, XMOMENTUM, YMOMENTUM, ENERGY, INVALID", "INVALID"),

@@ -27,16 +27,16 @@ class DotProductAux : public AuxKernel
 {
 public:
 
-  DotProductAux(const std::string & name, InputParameters parameters);
+  DotProductAux(const InputParameters & parameters);
 
 protected:
   virtual Real computeValue();
     // Vector 1:
-    VariableValue & _x_comp;
-    VariableValue & _y_comp;
-    VariableValue & _z_comp;
+    const VariableValue & _x_comp;
+    const VariableValue & _y_comp;
+    const VariableValue & _z_comp;
     // Vector 2:
-    VariableGradient & _grad_vector;
+    const VariableGradient & _grad_vector;
 };
 
 #endif //DOTPRODUCTAUX_H

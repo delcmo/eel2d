@@ -15,7 +15,7 @@ class EelMassInflowBC : public IntegratedBC
 {
 
 public:
-  EelMassInflowBC(const std::string & name, InputParameters parameters);
+  EelMassInflowBC(const InputParameters & parameters);
 
   virtual ~EelMassInflowBC(){}
 
@@ -38,9 +38,9 @@ protected:
     // which equation (mass/momentum/energy) this BC is acting on
     MooseEnum _eqn_type;
     
-    // Coupled aux variables
-    VariableValue & _pressure;
-    VariableValue & _area;
+    // Coupled aux const Variables
+    const VariableValue & _pressure;
+    const VariableValue & _area;
     
     // Specified velocity values:
     Real _rhou0_bc;

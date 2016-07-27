@@ -36,9 +36,8 @@ InputParameters validParams<ConservativeVariables2DIC>()
     return params;
 }
 
-ConservativeVariables2DIC::ConservativeVariables2DIC(const std::string & name,
-                     InputParameters parameters) :
-    InitialCondition(name, parameters),
+ConservativeVariables2DIC::ConservativeVariables2DIC(const InputParameters & parameters) :
+    InitialCondition(parameters),
     // Function
     _area(getFunction("area")),
 	// IC parameters

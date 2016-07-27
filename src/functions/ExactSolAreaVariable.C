@@ -27,8 +27,8 @@ InputParameters validParams<ExactSolAreaVariable>()
   return params;
 }
 
-ExactSolAreaVariable::ExactSolAreaVariable(const std::string & name, InputParameters parameters) :
-    Function(name, parameters),
+ExactSolAreaVariable::ExactSolAreaVariable(const InputParameters & parameters) :
+    Function(parameters),
     _var_name(getParam<std::string>("variable_name")),
     _var_type("DENSITY, VELOCITY, PRESSURE, INVALID", _var_name),
     _Po(getParam<Real>("p0_bc")),

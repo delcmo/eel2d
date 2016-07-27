@@ -25,8 +25,8 @@ InputParameters validParams<VariableTimesAreaAux>()
   return params;
 }
 
-VariableTimesAreaAux::VariableTimesAreaAux(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
+VariableTimesAreaAux::VariableTimesAreaAux(const InputParameters & parameters) :
+    AuxKernel(parameters),
     _var(coupledValue("var")),
     _area(coupledValue("area"))
 {}

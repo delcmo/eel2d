@@ -18,8 +18,8 @@ InputParameters validParams<EelWallBC>()
   return params;
 }
 
-EelWallBC::EelWallBC(const std::string & name, InputParameters parameters) :
-    IntegratedBC(name, parameters),
+EelWallBC::EelWallBC(const InputParameters & parameters) :
+    IntegratedBC(parameters),
     // Name of the equation:
     _eqn_name(getParam<std::string>("equation_name")),
     _eqn_type("CONTINUITY, XMOMENTUM, YMOMENTUM, ENERGY, INVALID", "INVALID"),

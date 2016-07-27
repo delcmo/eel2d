@@ -15,7 +15,7 @@ class EelStaticPandTBC : public IntegratedBC
 {
 
 public:
-  EelStaticPandTBC(const std::string & name, InputParameters parameters);
+  EelStaticPandTBC(const InputParameters & parameters);
 
   virtual ~EelStaticPandTBC(){}
 
@@ -36,16 +36,16 @@ protected:
     std::string _eqn_name;
     // which equation (mass/momentum/energy) this BC is acting on
     MooseEnum _eqn_type;
-    // Coupled aux variables
-    VariableValue & _rhoA;
-    VariableValue & _rhouA_x;
-    VariableValue & _rhouA_y;
-    VariableValue & _rhoEA;
-    VariableValue & _rhoA_old;
-    VariableValue & _rhouA_x_old;
-    VariableValue & _rhouA_y_old;
-    VariableValue & _rhoEA_old;
-    VariableValue & _area;
+    // Coupled aux const Variables
+    const VariableValue & _rhoA;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhouA_y;
+    const VariableValue & _rhoEA;
+    const VariableValue & _rhoA_old;
+    const VariableValue & _rhouA_x_old;
+    const VariableValue & _rhouA_y_old;
+    const VariableValue & _rhoEA_old;
+    const VariableValue & _area;
     
     // Specified pressure
     Real _p_bc;

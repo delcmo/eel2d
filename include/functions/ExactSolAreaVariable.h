@@ -27,7 +27,7 @@ InputParameters validParams<ExactSolAreaVariable>();
 class ExactSolAreaVariable : public Function
 {
 public:
-  ExactSolAreaVariable(const std::string & name, InputParameters parameters);
+  ExactSolAreaVariable(const InputParameters & parameters);
 
   virtual Real value(Real t, const Point & p);
 

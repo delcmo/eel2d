@@ -13,6 +13,8 @@
 /****************************************************************/
 
 #include "EelEnergy.h"
+#include "MooseMesh.h"
+
 /**
 This function computes the convective part of the total energy equation.
  */
@@ -36,9 +38,8 @@ InputParameters validParams<EelEnergy>()
   return params;
 }
 
-EelEnergy::EelEnergy(const std::string & name,
-                       InputParameters parameters) :
-  Kernel(name, parameters),
+EelEnergy::EelEnergy(const InputParameters & parameters) :
+  Kernel(parameters),
     // Coupled variables
     _rhoA(coupledValue("rhoA")),
     _rhouA_x(coupledValue("rhouA_x")),

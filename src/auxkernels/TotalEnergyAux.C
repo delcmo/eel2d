@@ -25,8 +25,8 @@ InputParameters validParams<TotalEnergyAux>()
   return params;
 }
 
-TotalEnergyAux::TotalEnergyAux(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
+TotalEnergyAux::TotalEnergyAux(const InputParameters & parameters) :
+    AuxKernel(parameters),
   // Coupled variables
     _rhoEA( coupledValue("rhoEA")),
   // Coupled Aux Variables

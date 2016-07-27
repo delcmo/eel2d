@@ -22,8 +22,8 @@ InputParameters validParams<ElementIntegralAbsVariablePostprocessor>()
   return params;
 }
 
-ElementIntegralAbsVariablePostprocessor::ElementIntegralAbsVariablePostprocessor(const std::string & name, InputParameters parameters) :
-    ElementIntegralPostprocessor(name, parameters),
+ElementIntegralAbsVariablePostprocessor::ElementIntegralAbsVariablePostprocessor(const InputParameters & parameters) :
+    ElementIntegralPostprocessor(parameters),
     MooseVariableInterface(parameters, false),
     _var(_subproblem.getVariable(_tid, parameters.get<VariableName>("variable"))),
     _u(_var.sln()),

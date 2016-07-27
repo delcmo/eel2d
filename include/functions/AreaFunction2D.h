@@ -25,7 +25,7 @@ InputParameters validParams<AreaFunction2D>();
 class AreaFunction2D : public Function
 {
 public:
-  AreaFunction2D(const std::string & name, InputParameters parameters);
+  AreaFunction2D(const InputParameters & parameters);
 
   virtual Real value(Real t, const Point & p);
 

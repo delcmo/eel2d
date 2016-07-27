@@ -19,8 +19,8 @@ InputParameters validParams<ModifiedTaitEOS>()
     return params;
 }
 
-ModifiedTaitEOS::ModifiedTaitEOS(const std::string & name, InputParameters parameters) :
-  GeneralUserObject(name, parameters),
+ModifiedTaitEOS::ModifiedTaitEOS(const InputParameters & parameters) :
+  GeneralUserObject(parameters),
     _gamma(getParam<Real>("gamma")),
     _P0(getParam<Real>("P0")),
     _P1(getParam<Real>("P1")),

@@ -27,14 +27,14 @@ class NormVectorAux : public AuxKernel
 {
 public:
 
-  NormVectorAux(const std::string & name, InputParameters parameters);
+  NormVectorAux(const InputParameters & parameters);
 
 protected:
   virtual Real computeValue();
 
-    VariableValue & _x_comp;
-    VariableValue & _y_comp;
-    VariableValue & _z_comp;
+    const VariableValue & _x_comp;
+    const VariableValue & _y_comp;
+    const VariableValue & _z_comp;
 };
 
 #endif //NORMVECTORAUX_H

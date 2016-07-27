@@ -19,8 +19,8 @@ InputParameters validParams<EelMassInflowBC>()
   return params;
 }
 
-EelMassInflowBC::EelMassInflowBC(const std::string & name, InputParameters parameters) :
-    IntegratedBC(name, parameters),
+EelMassInflowBC::EelMassInflowBC(const InputParameters & parameters) :
+    IntegratedBC(parameters),
    // Name of the equation:
     _eqn_name(getParam<std::string>("equation_name")),
     _eqn_type("CONTINUITY, XMOMENTUM, YMOMENTUM, ENERGY, INVALID", "INVALID"),

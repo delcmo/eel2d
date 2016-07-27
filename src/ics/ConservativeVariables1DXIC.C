@@ -34,9 +34,8 @@ InputParameters validParams<ConservativeVariables1DXIC>()
   return params;
 }
 
-ConservativeVariables1DXIC::ConservativeVariables1DXIC(const std::string & name,
-                     InputParameters parameters) :
-    InitialCondition(name, parameters),
+ConservativeVariables1DXIC::ConservativeVariables1DXIC(const InputParameters & parameters) :
+    InitialCondition(parameters),
     // Function
     _area(getFunction("area")),
 	// IC parameters

@@ -13,7 +13,7 @@ class ModifiedTaitEOS : public GeneralUserObject
 {
 public:
   // Constructor
-  ModifiedTaitEOS(const std::string & name, InputParameters parameters);
+  ModifiedTaitEOS(const InputParameters & parameters);
 
   // Destructor  
   virtual ~ModifiedTaitEOS(); 

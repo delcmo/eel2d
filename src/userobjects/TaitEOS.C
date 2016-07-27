@@ -19,8 +19,8 @@ InputParameters validParams<TaitEOS>()
     return params;
 }
 
-TaitEOS::TaitEOS(const std::string & name, InputParameters parameters) :
-  EquationOfState(name, parameters),
+TaitEOS::TaitEOS(const InputParameters & parameters) :
+  EquationOfState(parameters),
     _gamma(getParam<Real>("gamma")),
     _P0(getParam<Real>("P0")),
     _P1(getParam<Real>("P1")),

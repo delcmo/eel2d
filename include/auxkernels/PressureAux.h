@@ -28,17 +28,17 @@ class PressureAux : public AuxKernel
 {
 public:
 
-  PressureAux(const std::string & name, InputParameters parameters);
+  PressureAux(const InputParameters & parameters);
 
 protected:
   virtual Real computeValue();
 
-  VariableValue & _rhoA;
-  VariableValue & _rhouA_x;
-  VariableValue & _rhouA_y;
-  VariableValue & _rhouA_z;
-  VariableValue & _rhoEA;
-  VariableValue & _area;
+  const VariableValue & _rhoA;
+  const VariableValue & _rhouA_x;
+  const VariableValue & _rhouA_y;
+  const VariableValue & _rhouA_z;
+  const VariableValue & _rhoEA;
+  const VariableValue & _area;
   const EquationOfState & _eos;
 };
 

@@ -20,8 +20,8 @@ InputParameters validParams<EelFluxBC>()
   return params;
 }
 
-EelFluxBC::EelFluxBC(const std::string & name, InputParameters parameters) :
-    IntegratedBC(name, parameters),
+EelFluxBC::EelFluxBC(const InputParameters & parameters) :
+    IntegratedBC(parameters),
     // Type of equation:
     _eqn_name(getParam<std::string>("equation_name")),
     _eqn_type("CONTINUITY, XMOMENTUM, YMOMENTUM, ZMOMENTUM, ENERGY, INVALID", _eqn_name),

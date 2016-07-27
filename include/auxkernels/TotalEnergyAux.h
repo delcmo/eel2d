@@ -31,13 +31,13 @@ class TotalEnergyAux : public AuxKernel
 {
 public:
 
-  TotalEnergyAux(const std::string & name, InputParameters parameters);
+  TotalEnergyAux(const InputParameters & parameters);
 
 protected:
   virtual Real computeValue();
 
-  VariableValue & _rhoEA;
-  VariableValue & _area;
+  const VariableValue & _rhoEA;
+  const VariableValue & _area;
 };
 
 #endif //TOTALENERGYAUX_H

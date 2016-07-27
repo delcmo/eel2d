@@ -13,7 +13,7 @@ class TaitEOS : public EquationOfState
 {
 public:
   // Constructor
-  TaitEOS(const std::string & name, InputParameters parameters);
+  TaitEOS(const InputParameters & parameters);
 
   // Destructor  
   virtual ~TaitEOS(); 

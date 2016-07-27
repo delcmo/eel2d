@@ -12,7 +12,7 @@ class EelInfiniteBC : public IntegratedBC
 {
 
 public:
-  EelInfiniteBC(const std::string & name, InputParameters parameters);
+  EelInfiniteBC(const InputParameters & parameters);
 
   virtual ~EelInfiniteBC(){}
 
@@ -34,12 +34,12 @@ protected:
     std::string _eqn_name;
     /// which equation (mass/momentum/energy) this BC is acting on
     MooseEnum _eqn_type;
-    /// Coupled aux variables
-    VariableValue & _pressure;
-    VariableValue & _vel_x;
-    VariableValue & _vel_y;
-    VariableValue & _vel_z;
-    VariableValue & _area;
+    /// Coupled aux const Variables
+    const VariableValue & _pressure;
+    const VariableValue & _vel_x;
+    const VariableValue & _vel_y;
+    const VariableValue & _vel_z;
+    const VariableValue & _area;
 };
 
 #endif // EELINFINITEBC_H

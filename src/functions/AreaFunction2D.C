@@ -23,8 +23,8 @@ InputParameters validParams<AreaFunction2D>()
   return params;
 }
 
-AreaFunction2D::AreaFunction2D(const std::string & name, InputParameters parameters) :
-    Function(name, parameters),
+AreaFunction2D::AreaFunction2D(const InputParameters & parameters) :
+    Function(parameters),
     _Ao(getParam<Real>("Ao")),
     _Bo(getParam<Real>("Bo"))
 {}

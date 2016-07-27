@@ -16,7 +16,7 @@ InputParameters validParams<InviscidTimeStepLimit>();
 class InviscidTimeStepLimit : public ElementPostprocessor
 {
 public:
-  InviscidTimeStepLimit(const std::string & name, InputParameters parameters);
+  InviscidTimeStepLimit(const InputParameters & parameters);
   virtual ~InviscidTimeStepLimit();
 
   virtual void initialize();
@@ -29,9 +29,9 @@ protected:
   /// The value of dt (NOTE: _dt member variable is already defined)
   Real _value;
   /// Velocity magnitude.  Hint: Use VectorMagnitudeAux in Moose for this
-  VariableValue & _vel_mag;
+  const VariableValue & _vel_mag;
   /// Sound Speed
-  VariableValue & _c;
+  const VariableValue & _c;
   Real _beta;
 };
 

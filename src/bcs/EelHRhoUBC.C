@@ -22,8 +22,8 @@ InputParameters validParams<EelHRhoUBC>()
   return params;
 }
 
-EelHRhoUBC::EelHRhoUBC(const std::string & name, InputParameters parameters) :
-    IntegratedBC(name, parameters),
+EelHRhoUBC::EelHRhoUBC(const InputParameters & parameters) :
+    IntegratedBC(parameters),
     // Type of equation:
     _eqn_name(getParam<std::string>("equation_name")),
     _eqn_type("VOIDFRACTION, CONTINUITY, XMOMENTUM, ENERGY, INVALID", _eqn_name),

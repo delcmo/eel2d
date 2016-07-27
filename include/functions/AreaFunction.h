@@ -25,7 +25,7 @@ InputParameters validParams<AreaFunction>();
 class AreaFunction : public Function
 {
 public:
-  AreaFunction(const std::string & name, InputParameters parameters);
+  AreaFunction(const InputParameters & parameters);
 
   virtual Real value(Real t, const Point & p);
 

@@ -20,7 +20,7 @@ class EelHRhoUBC : public IntegratedBC
 {
 
 public:
-  EelHRhoUBC(const std::string & name, InputParameters parameters);
+  EelHRhoUBC(const InputParameters & parameters);
 
   virtual ~EelHRhoUBC(){}
 
@@ -41,15 +41,15 @@ protected:
     // which equation (mass/momentum/energy) this BC is acting on
     MooseEnum _eqn_type;
 
-    // Coupled variables
-    VariableValue & _rhoA;
-    VariableValue & _rhouA_x;
-    VariableValue & _rhoEA;
+    // Coupled const Variables
+    const VariableValue & _rhoA;
+    const VariableValue & _rhouA_x;
+    const VariableValue & _rhoEA;
     
-    // Coupled aux variables:
-    VariableValue & _area;
+    // Coupled aux const Variables:
+    const VariableValue & _area;
 
-    // Specified stagnation variables:
+    // Specified stagnation const Variables:
     Real _rhou;
     Real _H;
 

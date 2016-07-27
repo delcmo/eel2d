@@ -14,7 +14,7 @@ InputParameters validParams<ComputeViscCoeff>();
 class ComputeViscCoeff : public Material
 {
 public:
-  ComputeViscCoeff(const std::string & name, InputParameters parameters);
+  ComputeViscCoeff(const InputParameters & parameters);
 
 protected:
   virtual void computeQpProperties();
@@ -39,7 +39,7 @@ private:
         HMP = 1,
         ST = 2
     };
-    VariableValue & _PBVisc;
+    const VariableValue & _PBVisc;
     std::string _norm_pbs_name;
     MooseEnum _norm_pbs_type;
     
@@ -47,37 +47,37 @@ private:
     bool _isJumpOn;
     bool _isShock;
     
-    // Coupled aux variables: velocity
-    VariableValue & _vel_x;
-    VariableValue & _vel_y;
-    VariableValue & _vel_z;
-    VariableGradient & _grad_vel_x;
-    VariableGradient & _grad_vel_y;
-    VariableGradient & _grad_vel_z;
+    // Coupled aux const Variables: velocity
+    const VariableValue & _vel_x;
+    const VariableValue & _vel_y;
+    const VariableValue & _vel_z;
+    const VariableGradient & _grad_vel_x;
+    const VariableGradient & _grad_vel_y;
+    const VariableGradient & _grad_vel_z;
     
-    // Coupled aux variables: pressure
-    VariableValue & _pressure;
-    VariableValue & _pressure_old;
-    VariableValue & _pressure_older;
-    VariableGradient & _grad_press;
+    // Coupled aux const Variables: pressure
+    const VariableValue & _pressure;
+    const VariableValue & _pressure_old;
+    const VariableValue & _pressure_older;
+    const VariableGradient & _grad_press;
     
-    // Coupled aux variable: density
-    VariableValue & _rho;
-    VariableValue & _rho_old;
-    VariableValue & _rho_older;
-    VariableGradient & _grad_rho;
+    // Coupled aux const Variable: density
+    const VariableValue & _rho;
+    const VariableValue & _rho_old;
+    const VariableValue & _rho_older;
+    const VariableGradient & _grad_rho;
     
-    // Coupled aux variable: norm of velocity
-    VariableValue & _norm_vel;
-    VariableGradient & _grad_norm_vel;
+    // Coupled aux const Variable: norm of velocity
+    const VariableValue & _norm_vel;
+    const VariableGradient & _grad_norm_vel;
     
     // Jump of pressure gradient:
-    VariableValue & _jump_grad_press;
-    VariableValue & _jump_grad_dens;
+    const VariableValue & _jump_grad_press;
+    const VariableValue & _jump_grad_dens;
     
     // Jump cross section:
-    VariableValue & _area;
-    VariableGradient & _grad_area;
+    const VariableValue & _area;
+    const VariableGradient & _grad_area;
     
     // Material properties
     MaterialProperty<Real> & _mu;

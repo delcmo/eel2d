@@ -25,8 +25,8 @@ InputParameters validParams<AreaFunction>()
   return params;
 }
 
-AreaFunction::AreaFunction(const std::string & name, InputParameters parameters) :
-    Function(name, parameters),
+AreaFunction::AreaFunction(const InputParameters & parameters) :
+    Function(parameters),
     _left(getParam<Real>("left")),
     _length(getParam<Real>("length")),
     _Ao(getParam<Real>("Ao")),

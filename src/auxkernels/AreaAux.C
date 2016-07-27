@@ -26,8 +26,8 @@ InputParameters validParams<AreaAux>()
   return params;
 }
 
-AreaAux::AreaAux(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
+AreaAux::AreaAux(const InputParameters & parameters) :
+    AuxKernel(parameters),
     _area(getFunction("area"))
 {}
 

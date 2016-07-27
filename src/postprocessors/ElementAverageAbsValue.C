@@ -21,8 +21,8 @@ InputParameters validParams<ElementAverageAbsValue>()
   return params;
 }
 
-ElementAverageAbsValue::ElementAverageAbsValue(const std::string & name, InputParameters parameters) :
-    ElementIntegralAbsVariablePostprocessor(name, parameters),
+ElementAverageAbsValue::ElementAverageAbsValue(const InputParameters & parameters) :
+    ElementIntegralAbsVariablePostprocessor(parameters),
     _volume(0)
 {}
 

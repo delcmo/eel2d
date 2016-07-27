@@ -15,6 +15,7 @@
 This function compute the norm of a vector. It is used for LAPIDUS since the gradient of the norm of the velocity vector is required.
 **/
 #include "DotProductAux.h"
+#include "MooseMesh.h"
 
 template<>
 InputParameters validParams<DotProductAux>()
@@ -29,8 +30,8 @@ InputParameters validParams<DotProductAux>()
   return params;
 }
 
-DotProductAux::DotProductAux(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
+DotProductAux::DotProductAux(const InputParameters & parameters) :
+    AuxKernel(parameters),
     // Vector 1:
     _x_comp(coupledValue("x_component")),
     _y_comp(_mesh.dimension()>=2 ? coupledValue("y_component") : _zero),

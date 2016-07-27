@@ -25,8 +25,8 @@ InputParameters validParams<DensityAux>()
   return params;
 }
 
-DensityAux::DensityAux(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
+DensityAux::DensityAux(const InputParameters & parameters) :
+    AuxKernel(parameters),
     _rhoA(coupledValue("rhoA")),
     _area(coupledValue("area"))
 {}

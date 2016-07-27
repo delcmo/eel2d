@@ -26,8 +26,7 @@ class EelPressureBasedVisc : public Kernel
 {
 public:
 
-  EelPressureBasedVisc(const std::string & name,
-             InputParameters parameters);
+  EelPressureBasedVisc(const InputParameters & parameters);
 
 protected:
  
@@ -38,8 +37,8 @@ protected:
   virtual Real computeQpOffDiagJacobian( unsigned int jvar );
 
 private:
-    // Coupled variables
-    VariableGradient & _grad_press;
+    // Coupled const Variables
+    const VariableGradient & _grad_press;
 };
 
 #endif // EELPRESSUREBASEDVISC_H

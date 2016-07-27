@@ -13,8 +13,8 @@ InputParameters validParams<StiffenedGasEquationOfState>()
     return params;
 }
 
-StiffenedGasEquationOfState::StiffenedGasEquationOfState(const std::string & name, InputParameters parameters) :
-  EquationOfState(name, parameters),
+StiffenedGasEquationOfState::StiffenedGasEquationOfState(const InputParameters & parameters) :
+  EquationOfState(parameters),
     _gamma(getParam<Real>("gamma")),
     _Pinf(getParam<Real>("Pinf")),
     _qcoeff(getParam<Real>("q")),
