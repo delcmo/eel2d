@@ -28,6 +28,7 @@ InputParameters validParams<OneDFirstOrderViscosityCoefficient>()
   params.addRequiredCoupledVar("rhoEA", "rhoEA");
   params.addCoupledVar("area", 1., "area");
   params.addRequiredParam<UserObjectName>("eos", "Equation of state");
+  params.addParam<Real>("Cmax", 0.5, "Constant multiplying the first-order viscosity coefficient.");
   return params;
 }
 
@@ -37,7 +38,8 @@ OneDFirstOrderViscosityCoefficient::OneDFirstOrderViscosityCoefficient(const Inp
     _rhouA(coupledValue("rhouA")),
     _rhoEA(coupledValue("rhoEA")),
     _area(coupledValue("area")),
-    _eos(getUserObject<OneDEquationOfState>("eos"))
+    _eos(getUserObject<OneDEquationOfState>("eos")),
+    _Cmax(getParam<Real>("Cmax"))
 {}
 
 Real
@@ -51,7 +53,10 @@ OneDFirstOrderViscosityCoefficient::computeValue()
 
   Real h=_current_elem->volume();
   
-  return 0.5*h*(std::fabs(vel)+c);
+  Real visc_max_tmp = _Cmax*h*(std::fabs(vel)+c);
+  return _t_step < 10 ? (11.-_t_step)*visc_max_tmp : visc_max_tmp;
+  
+//  return 0.5*h*(std::fabs(vel)+c);
 }
 
 void

@@ -13,6 +13,7 @@
 /****************************************************************/
 
 #include "ElementIntegralMultipleVariablesPostprocessor.h"
+#include "MooseVariableInterface.h"
 #include "MooseMesh.h"
 
 template<>
@@ -37,7 +38,7 @@ InputParameters validParams<ElementIntegralMultipleVariablesPostprocessor>()
 
 ElementIntegralMultipleVariablesPostprocessor::ElementIntegralMultipleVariablesPostprocessor(const InputParameters & parameters) :
     ElementIntegralPostprocessor(parameters),
-    MooseVariableInterface(parameters, false),
+    MooseVariableInterface(this, false),
     // Function Mach number:
     _output_name(getParam<std::string>("output_type")),
     _output_type("RHOVEL2, RHOCVEL, RHOC2, INVALID", _output_name),

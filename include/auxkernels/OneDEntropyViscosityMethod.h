@@ -59,6 +59,7 @@ protected:
   
   const Real _Cejump;
   const Real _Ce;
+  const Real _Cmax;
   
   const bool _norm_type;
 };

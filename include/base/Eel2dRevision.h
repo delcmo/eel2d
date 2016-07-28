@@ -3,6 +3,6 @@
 #ifndef EEL2D_REVISION_H
 #define EEL2D_REVISION_H
 
-#define EEL2D_REVISION "git commit 5aa9b12 on 2015-02-04"
+#define EEL2D_REVISION "git commit d042bd3 on 2016-07-27"
 
 #endif // EEL2D_REVISION_H

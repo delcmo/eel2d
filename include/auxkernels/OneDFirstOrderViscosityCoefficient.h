@@ -40,6 +40,8 @@ protected:
   const VariableValue & _area;
 
   const OneDEquationOfState & _eos;
+  
+  const Real _Cmax;
 };
 
 #endif // ONEDFIRSTORDERVISCOSITYCOEFFICIENT_H

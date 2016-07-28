@@ -35,6 +35,7 @@ InputParameters validParams<OneDEntropyViscosityMethod>()
   params.addRequiredParam<std::string>("velocity_average", "name of the pps computing rho*vel*vel");
   params.addParam<Real>("Cejump", 1., "Constant multiplying the entropy residual and jumps.");
   params.addParam<Real>("Ce", 1., "Constant multiplying the entropy residual.");
+  params.addParam<Real>("Cmax", 0.5, "Constant multiplying the first-order viscosity coefficient.");
   params.addParam<bool>("norm_type", false, "Boolean for choosing normalization type.");
   return params;
 }
@@ -59,6 +60,7 @@ OneDEntropyViscosityMethod::OneDEntropyViscosityMethod(const InputParameters & p
     _vel_average(getParam<std::string>("velocity_average")),
     _Cejump(getParam<Real>("Cejump")),
     _Ce(getParam<Real>("Ce")),
+    _Cmax(getParam<Real>("Cmax")),
     _norm_type(getParam<bool>("norm_type"))
 {}
 
@@ -71,7 +73,8 @@ OneDEntropyViscosityMethod::computeValue()
   Real rhoE=_rhoEA[_qp]/_area[_qp];
   Real vel=rhou/rho;
   Real c=std::sqrt(_eos.c2(rho, rhou, rhoE));
-  Real visc_max=0.5*h*(std::fabs(vel)+c);
+  Real visc_max_tmp = _Cmax*h*(std::fabs(vel)+c);
+  Real visc_max = _t_step < 10 ? (11.-_t_step)*visc_max_tmp : visc_max_tmp;
   
   Real vel_avg = std::max(getPostprocessorValueByName(_vel_average), 1.e-6);
   
